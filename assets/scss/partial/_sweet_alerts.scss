@@ -1,0 +1,15 @@
+.sw_custom_container .swal2-timer-progress-bar{
+    background: $btnColor;
+}
+.sw_custom_icon {
+    border-color: $btnColor !important;
+}
+.sw_custom_icon .swal2-success-ring{
+    border:.25em solid rgba(192, 35, 21, 0.3) !important;
+}
+.sw_custom_icon .swal2-success-line-tip{
+    background-color: $newThemeColor !important;
+}
+.sw_custom_icon .swal2-success-line-long{
+    background-color: $newThemeColor !important;
+}

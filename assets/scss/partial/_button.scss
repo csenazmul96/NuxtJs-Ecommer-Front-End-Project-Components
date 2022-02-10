@@ -1,0 +1,23 @@
+@import '../mixin/buttonstyle';
+.btn_common{
+    @include buttonstyle;
+}
+.btn_transparent {
+    @include trasparent_buttonstyle;
+}
+.btn_grey {
+    @include grey_buttonstyle;
+}
+
+.btn_danger {
+    @include danger_buttonstyle;
+}
+.btn_paypal {
+    background: #F7BE38;
+    &:hover {
+        background: #F7BE38;
+    }
+    &:focus {
+        background: #F7BE38;
+    }
+}

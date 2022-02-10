@@ -1,0 +1,49 @@
+.pagination_global {
+    @include d_flex_end;
+    margin: 20px 0px;
+    nav {
+        @include d_flex_end;
+
+    }
+    input{
+        width: 33px;
+        height: 33px;
+        background: #fff;
+        outline: 0;
+        box-shadow: none;
+        text-align: center;
+        margin-left: 10px;
+        margin-right: 20px;
+        border: 1px solid #000;
+        @include belowIpadpro {
+            font-size: 16px;
+        }
+        &:focus {
+            outline: 0;
+            box-shadow: none;
+        }
+
+    }
+    .pagination {
+        margin-left: 10px;
+        > li {
+            @include d_flex_center;
+            height: 33px;
+            width: 33px;
+            background: #fff;
+            margin: 0px 5px;
+            transition: all .3s;
+            &:last-child {
+                margin: 0;
+            }
+            &:hover {
+                background: $btnColor;
+                color: #fff;
+                transition: all .3s;
+            }
+            > a {
+                @include d_flex_center;
+            }
+        }
+    }
+}

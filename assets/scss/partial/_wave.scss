@@ -1,0 +1,65 @@
+.ocean {
+    height: 5%;
+    width: 100%;
+    position: absolute;
+    bottom: -50px;
+    left: 0;
+    background: #fff;
+  }
+  .ocean_wrap {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1;
+
+  }
+  .banner_wrap {
+      overflow: hidden;
+      position: relative;
+  }
+  .wave {
+    // background: url(https://cdn.kcak11.com/codepen_assets/wave_animation/wave.svg) repeat-x;
+    background: url(./../media/images/wave7.png) repeat-x;
+    position: absolute;
+    top: -160px;
+    width: 6400px;
+    height: 160px;
+    animation: wave 5s cubic-bezier(0.36, 0.45, 0.63, 0.53) infinite;
+    transform: translate3d(0, 0, 0);
+    //@include  aboveMobile {
+    //  top: -160px;
+    //  height: 160px;
+    //}
+  }
+
+  .wave:nth-of-type(2) {
+    top: -140px;
+    animation: wave 5s cubic-bezier(0.36, 0.45, 0.63, 0.53) -0.125s infinite, swell 5s ease -1.25s infinite;
+    opacity: 1;
+    //@include  aboveMobile {
+    //  top: -140px;
+    //}
+  }
+
+  @keyframes wave {
+    0% {
+      margin-left: 0;
+    }
+    100% {
+      margin-left: -1600px;
+    }
+  }
+  @keyframes swell {
+    0%,
+    100% {
+      transform: translate3d(0, -25px, 0);
+    }
+    50% {
+      transform: translate3d(0, 5px, 0);
+    }
+  }
+  .endWave{
+    display:none;
+  }

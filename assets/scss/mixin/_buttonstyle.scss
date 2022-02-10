@@ -1,0 +1,139 @@
+@mixin buttonstyle {
+    width: 100%;
+    position: relative;
+    line-height: 40px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 2px;
+    padding: 0 10px;
+    background: $btnColor;
+    color: #FFFFFF;
+    border: none;
+    text-transform: uppercase;
+    transition: all .3s;
+    font-family: $font_opensans;
+    &:hover {
+        background-color: $btnColor;
+        outline: none;
+        color: #FFFFFF;
+        opacity: .8;
+        transition: all .3s;
+    }
+    &:focus {
+        background-color: $btnColor;
+        outline: none;
+        color: #FFFFFF;
+        box-shadow: none;
+        opacity: .8;
+        transition: all .3s;
+    }
+    &:disabled {
+        outline: 0;
+        box-shadow: none;
+        background: grey!important;
+        border-color: grey!important;
+        cursor: not-allowed;
+    }
+}
+@mixin trasparent_buttonstyle {
+    width: 100%;
+    position: relative;
+    line-height: 40px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 2px;
+    padding: 0 10px;
+    background: transparent;
+    color: #fff;
+    border: 1px solid $btnColor;
+    background: $btnColor;;
+    text-transform: uppercase;
+    font-family: $font_opensans;
+    &:hover {
+        background: $btnColor;
+        outline: none;
+        color: #fff;
+        opacity: .8;
+    }
+    &:focus {
+        background: $btnColor;
+        outline: none;
+        color: #fff;
+        box-shadow: none;
+    }
+    &:disabled {
+        outline: 0;
+        box-shadow: none;
+        background: grey!important;
+        border-color: grey!important;
+        cursor: not-allowed;
+    }
+}
+
+@mixin grey_buttonstyle {
+    position: relative;
+    line-height: 38px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 2px;
+    padding: 0 10px;
+    background: $btnColor;
+    color: #fff;
+    border: 1px solid $btnColor;
+    text-transform: uppercase;
+    font-family: $font_opensans;
+    &:hover {
+        background-color: $btnColor;
+        outline: none;
+        color: #FFFFFF;
+        opacity: .8;
+        transition: all .3s;
+    }
+    &:focus {
+        background: $btnColor;
+        outline: none;
+        color: #FFFFFF;
+        box-shadow: none;
+    }
+    &:disabled {
+        outline: 0;
+        box-shadow: none;
+        background: grey!important;
+        border-color: grey!important;
+        cursor: not-allowed;
+    }
+}
+
+@mixin danger_buttonstyle {
+    position: relative;
+    line-height: 38px;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 2px;
+    padding: 0 10px;
+    background: #933835;
+    color: #fff;
+    border: 1px solid #933835;
+    text-transform: uppercase;
+    font-family: $font_opensans;
+    &:hover {
+        background-color: #933835;
+        outline: none;
+        color: #FFFFFF;
+        opacity: .8;
+        transition: all .3s;
+    }
+    &:focus {
+        background: #933835;
+        outline: none;
+        color: #FFFFFF;
+        box-shadow: none;
+    }
+    &:disabled {
+        outline: 0;
+        box-shadow: none;
+        background: #933835!important;
+        border-color: #933835!important;
+        cursor: not-allowed;
+    }
+}

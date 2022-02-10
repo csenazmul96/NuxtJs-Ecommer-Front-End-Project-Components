@@ -1,0 +1,173 @@
+
+@import 'variable';
+@import 'mixin';
+@import 'color';
+@import 'partial';
+@import 'utilities';
+*{
+	margin: 0;
+	padding: 0;
+}
+
+/*---------------------------------------
+COMMON STYLES
+-----------------------------------------*/
+html {
+    // your css to create a cover image
+    padding: env(safe-area-inset); // <- this is the missing piece. Add it.
+    height: 100%;
+}
+body{
+    font-family: $font_opensans;
+    color: $color1;
+    font-size: 14px;
+    background-color: #fff;
+    max-width: 100%;
+    min-width: 100%;
+    -webkit-text-size-adjust: none;
+    height: 100%;
+
+}
+a:hover, a:focus {
+    box-shadow: 0 0px transparent;
+    text-decoration: none;
+    color: inherit;
+}
+.no-padding{
+    padding-left: 0;
+    padding-right: 0;
+}
+.no-padding-left{
+    padding-left: 0;
+}
+.no-padding-right{
+    padding-right: 0;
+
+}
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+a, a:hover {
+    color: inherit;
+}
+.td_underline {
+    text-decoration: underline;
+}
+.tt_u {
+    text-transform: uppercase;
+}
+.n_margin {
+    margin-left: -15px;
+    margin-right: -15px;
+}
+.err_msg {
+    color: red;
+    font-size: 10px;
+}
+.fwb {
+    font-weight: bold!important;
+}
+@include mobile {
+    .n_margin {
+        margin-left: 0px;
+        margin-right: 0px;
+    }
+
+}
+
+@include desktop{
+    .show_mobile {
+        display: none!important;
+    }
+}
+
+@include aboveMobile {
+    .ipad_none {
+        display: none;
+    }
+}
+
+@include mobile {
+    .m_none {
+        display: none;
+    }
+}
+
+
+@include belowDesktop{
+    .show_desktop {
+        display: none!important;
+    }
+    .overflow_hidden {
+        overflow: hidden!important;
+        position: relative;
+        // padding-right: 17px;
+    }
+    // .ct_margin {
+    //     height: 47px!important;
+    // }
+    .my_account_header  .ct_margin {
+        height: 97px!important;
+    }
+}
+
+.common_top_padding {
+    padding-top: 61px!important;
+    @include belowDesktop {
+        padding-top: 52px!important;
+    }
+}
+
+.home_header {
+    position: relative;
+    z-index: 5;
+    &.fixed-top {
+        position: fixed;
+    }
+}
+
+.home_page {
+  .common_top_padding {
+    padding-top: 0px!important;
+    @include belowDesktop {
+      padding-top: 52px!important;
+    }
+  }
+}
+  .live_notification_on {
+    .header_area {
+      background: $headerType2Color;
+    }
+    .common_top_padding {
+          padding-top: 100px!important;
+          @include belowDesktop {
+              padding-top: 91px!important;
+          }
+      }
+  }
+
+@media(min-width: 1025px) {
+    .mobile_overlay {
+        display: none;
+    }
+}
+
+@media(max-width: 1024px) {
+    .mobile_overlay {
+        position: fixed;
+        top: 52px;
+        left: 0;
+        width: 100%;
+        height: calc(100% - 52px);
+        background: rgba(0,0,0,0);
+        z-index: 20;
+        opacity: 0;
+        visibility: hidden;
+        &.open {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+}
