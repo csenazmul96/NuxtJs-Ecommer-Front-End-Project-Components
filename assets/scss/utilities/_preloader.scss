@@ -1,0 +1,99 @@
+
+.preloader_wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #fff;
+    z-index: 1040;
+}
+.loader-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  z-index: 4;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: #fff;
+}
+
+.loader-circle {
+  border-top: 1px solid #0f0000;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
+
+#loaderSvgWrapper{
+  position: fixed;
+    top: 61px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+    background: rgba(255,255,255,.8);
+  z-index: 1099;
+  &.home_page {
+    top: 0;
+  }
+    @include belowIpadpro {
+        top: 56px;
+    }
+}
+#preLoader{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50% , -50% );
+}
+path{
+  fill: $btnColor;
+  stroke: $btnColor;
+}
+#T1{
+  animation: visible 2s ease .2s infinite;
+}
+#T2{
+  animation: visible 2s ease .4s infinite;
+}
+#T3{
+  animation: visible 2s ease .6s infinite;
+}
+#T4{
+  animation: visible 2s ease .8s infinite;
+}
+#T5{
+  animation: visible 2s ease 1s infinite;
+}
+#T6{
+  animation: visible 2s ease 1.2s infinite;
+}
+@keyframes visible {
+  0%{
+    opacity: 1;
+    stroke-opacity: 1;
+  }
+  50%{
+    opacity: 0;
+    stroke-opacity: 0;
+  }
+  100%{
+    opacity: 1;
+    stroke-opacity: 1;
+  }
+}

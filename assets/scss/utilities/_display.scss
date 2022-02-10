@@ -1,0 +1,21 @@
+@import '../mixin/display';
+.d_flex_start {
+    @include d_flex_start;    
+} 
+.d_flex_btwn {
+    @include d_flex_btwn;
+}
+ .d_flex_center {
+    @include d_flex_center;
+}
+ .d_flex_end {
+    @include d_flex_end;
+}
+
+.d_flex_inline{
+    display: inline-flex;
+    align-items: center;
+}
+.d_none {
+    display: none;
+}

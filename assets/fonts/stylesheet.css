@@ -1,0 +1,99 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300;1,400;1,600;1,700;1,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,600;1,700;1,800;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,500;1,600;1,700;1,800&display=swap');
+@font-face {
+    font-family: 'Lyon Display Web Medium';
+    src: url('LyonDisplayWeb-Medium.eot');
+    src: url('LyonDisplayWeb-Medium.eot?#iefix') format('embedded-opentype'),
+        url('LyonDisplayWeb-Medium.woff2') format('woff2'),
+        url('LyonDisplayWeb-Medium.woff') format('woff'),
+        url('LyonDisplayWeb-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lyon Display Web';
+    src: url('LyonDisplayWeb-Regular.eot');
+    src: url('LyonDisplayWeb-Regular.eot?#iefix') format('embedded-opentype'),
+        url('LyonDisplayWeb-Regular.woff2') format('woff2'),
+        url('LyonDisplayWeb-Regular.woff') format('woff'),
+        url('LyonDisplayWeb-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("fa-regular-400.eot");
+  src: url("fa-regular-400.eot?#iefix") format("embedded-opentype"), url("fa-regular-400.woff2") format("woff2"), url("fa-regular-400.woff") format("woff"), url("fa-regular-400.ttf") format("truetype"), url("fa-regular-400.svg#fontawesome") format("svg"); }
+
+.far {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: 'Font Awesome 5 Free';
+  font-style: normal;
+  font-weight: 900;
+  font-display: block;
+  src: url("fa-solid-900.eot");
+  src: url("fa-solid-900.eot?#iefix") format("embedded-opentype"), url("fa-solid-900.woff2") format("woff2"), url("fa-solid-900.woff") format("woff"), url("fa-solid-900.ttf") format("truetype"), url("fa-solid-900.svg#fontawesome") format("svg"); }
+
+.fa,
+.fas {
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+}
+
+@font-face {
+  font-family: 'Font Awesome 5 Brands';
+  font-style: normal;
+  font-weight: 400;
+  font-display: block;
+  src: url("fa-brands-400.eot");
+  src: url("fa-brands-400.eot?#iefix") format("embedded-opentype"), url("fa-brands-400.woff2") format("woff2"), url("fa-brands-400.woff") format("woff"), url("fa-brands-400.ttf") format("truetype"), url("fa-brands-400.svg#fontawesome") format("svg"); }
+
+.fab {
+  font-family: 'Font Awesome 5 Brands';
+  font-weight: 400; }
+
+@font-face {
+  /*font-family: 'AdihausDIN Cn';*/
+  /*src: url('AdihausDIN-Cn.eot');*/
+  /*src: url('AdihausDIN-Cn.eot?#iefix') format('embedded-opentype'),*/
+  /*url('AdihausDIN-Cn.woff2') format('woff2'),*/
+  /*url('AdihausDIN-Cn.woff') format('woff'),*/
+  /*url('AdihausDIN-Cn.ttf') format('truetype'),*/
+  /*url('AdihausDIN-Cn.svg#AdihausDIN-Cn') format('svg');*/
+  /*font-weight: normal;*/
+  /*font-style: normal;*/
+  /*font-display: swap;*/
+}
+
+
+
+@font-face {
+  font-family: 'AdihausDIN';
+  src: url('AdihausDIN-Regular.eot');
+  src: url('AdihausDIN-Regular.eot?#iefix') format('embedded-opentype'),
+  url('AdihausDIN-Regular.woff2') format('woff2'),
+  url('AdihausDIN-Regular.woff') format('woff'),
+  url('AdihausDIN-Regular.ttf') format('truetype'),
+  url('AdihausDIN-Regular.svg#AdihausDIN-Regular') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+

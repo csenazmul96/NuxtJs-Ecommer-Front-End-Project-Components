@@ -1,0 +1,82 @@
+$desktopBig : 1500px;
+$belowBigDesktop : 1499px;
+$desktop : 1025px;
+$ipadpro : 1024px;
+$belowIpadpro : 1023px;
+$ipad : 768px;
+$mobile : 767px;
+$smallmobile : 500px;
+@mixin belowBigDesktop {
+    @media(max-width: #{$belowBigDesktop}) {
+        @content;
+    }
+}
+@mixin desktop {
+    @media(min-width: #{$desktop}) {
+        @content;
+    }
+}
+@mixin belowBigDesktop {
+    @media(max-width: #{$belowBigDesktop}) {
+        @content;
+    }
+}
+@mixin belowDesktop {
+    @media(max-width: #{$ipadpro}) {
+        @content;
+    }
+}
+@mixin ipadpro{
+    @media(max-width: #{$ipadpro}) {
+        @content;
+    }
+}
+@mixin fromIpadpro {
+    @media(min-width: #{$ipadpro}) {
+        @content;
+    }
+}
+@mixin belowIpadpro {
+    @media(max-width: #{$belowIpadpro}) {
+        @content;
+    }
+}
+@mixin ipad {
+    @media(max-width: #{$ipad}) {
+        @content;
+    }
+}
+
+@mixin aboveMobile {
+    @media(min-width: #{$ipad}) {
+        @content;
+    }
+}
+@mixin mobile {
+    @media(max-width: #{$mobile}) {
+        @content;
+    }
+}
+
+@include mobile {
+    .for_desktop {
+        display: none;
+    }
+}
+
+@include aboveMobile {
+    .below_mobile {
+        display: none!important;
+    }
+
+}
+@include mobile {
+     .above_mobile {
+        display: none!important;
+    }
+}
+@mixin smallmobile {
+    @media(max-width: #{$smallmobile}) {
+        @content;
+    }
+}
