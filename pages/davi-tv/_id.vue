@@ -1,6 +1,6 @@
 <template>
   <div>
-    <section class="ly_broadcasting_area">
+    <section v-if="liveData && liveData.type == 1" class="ly_broadcasting_area">
       <div class="ly_broadcasting_container">
         <div class="ly_broadcasting_row">
           <div class="full_content">
@@ -306,6 +306,7 @@
         </div>
       </div>
     </section>
+    <uploaded-video-section v-else-if="liveData && liveData.type==2" :liveData="liveData"></uploaded-video-section>
     <section class="ly_broadcasting_area broadcasting_list">
       <div class="ly_broadcasting_container">
         <div class="inner details_view" v-show="recentVideoList.length">
@@ -320,7 +321,7 @@
                     <div class="inner_wrap">
                       <nuxt-link :to="{name:'davi-tv-id', params:{id:video.id}}">
                         <div class="slide_img">
-                          <img :src="thumb ? thumb : '/images/play.png'" class="width_full" alt="">
+                          <img :src="video.preview_thumbs ? video.preview_thumbs : (thumb ? thumb : '/images/play.png')" class="width_full" alt="">
                           <img v-if="video.preview_gif" :src="video.preview_gif" class="width_full on_hover" alt="">
                         </div>
                         <div class="play">
@@ -354,10 +355,12 @@
 <script>
 import "@/assets/scss/live_chat.scss";
 import {mapGetters} from "vuex";
+import UploadedVideoSection from "../../components/UploadedVideoSection";
 
 export default {
   middleware: 'auth',
   name: 'live-chat',
+  components: {UploadedVideoSection},
   props: {
   },
   data() {
@@ -405,16 +408,21 @@ export default {
   },
   created() {
     let self = this
-    this.$axios.get(process.env.NUXT_ENV_BROADCAST_API + '/davi-tv/'+this.$route.params.id)
+    this.$axios.get(process.env.NUXT_ENV_BROADCAST_API + '/replay-videos/'+this.$route.params.id)
       .then((response)=>{
         this.liveData = response.data.data
-        this.loadProducts()
-        this.loadComments()
-        this.loadReacts()
-        this.initJwPlayer()
-        this.loadItemHistory()
+        if(this.liveData.type == 1){
+          this.loadProducts()
+          this.loadComments()
+          this.loadReacts()
+          setTimeout(()=>{
+            this.initJwPlayer()
+          }, 500)
+          this.loadItemHistory()
+        }
       })
-    this.$axios.get(process.env.NUXT_ENV_BROADCAST_API + '/live-video-inactive/' + process.env.NUXT_ENV_BROADCAST_VENDOR_ID)
+
+    this.$axios.get(process.env.NUXT_ENV_BROADCAST_API + '/video-active/' + process.env.NUXT_ENV_BROADCAST_VENDOR_ID)
       .then((response)=>{
         this.recentVideoList = response.data.data
         setTimeout(function(){

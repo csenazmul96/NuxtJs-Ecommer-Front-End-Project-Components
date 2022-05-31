@@ -2,7 +2,7 @@
   <section class="product_area">
     <div class="product_banner" >
       <div class="inner_text">
-          <h1>Look Book</h1>
+        <h1>Look Book</h1>
       </div>
     </div>
     <div :class="['hl_bredcrumbs']" >
@@ -23,8 +23,8 @@
           <span class="up"><i class="lni lni-chevron-up"></i></span>
         </li>
         <div class="f_bottom" id="sort">
-          <ul>
-            <li v-if="lookBookSeasons.length" v-for="season in lookBookSeasons" @click.prevent="changeSeason(season)"> <a href="javascript:void(0)">{{ season.name }}</a> </li>
+          <ul v-if="lookBookSeasons.length">
+            <li v-for="(season, index) in lookBookSeasons" @click.prevent="changeSeason(season)" :key="'season' + index"> <a href="javascript:void(0)">{{ season.name }}</a> </li>
           </ul>
         </div>
       </ul>
@@ -33,8 +33,8 @@
       <div data-toggle="collapse_slide" data-target="#mfilter" class="m_f_button">Season {{currentSeason? currentSeason.name : null}} </div>
       <div class="p_filter_content" id="mfilter">
         <div class="header_menu_inner mobile_nav">
-          <ul>
-            <li v-if="lookBookSeasons.length" v-for="season in lookBookSeasons" @click.prevent="changeSeason(season)"> <a href="javascript:void(0)">{{ season.name }}</a> </li>
+          <ul v-if="lookBookSeasons.length">
+            <li v-for="(season, index) in lookBookSeasons" @click.prevent="changeSeason(season)" :key="'season_mobile' + index"> <a href="javascript:void(0)">{{ season.name }}</a> </li>
           </ul>
         </div>
         <span class="close_h_menu p_filter_close"  @click.prevent="closeFilter">close</span>
@@ -45,19 +45,19 @@
         <div class="schedule_img" v-for="(image, imageIndex) in lookBooks" :key="'deskList_' + imageIndex">
           <img :src="image.image" class="img-fluid" alt="">
         </div>
-<!--        <client-only>-->
-<!--          <template v-if="lookBooks.length">-->
-<!--            <VueSlickCarousel ref="c1"-->
-<!--                              id="zoom-area"-->
-<!--                              v-bind="sliderSettings">-->
-<!--              <div :class="['slide']"-->
-<!--                   v-for="(image, imageIndex) in lookBooks"-->
-<!--                   :key="'deskList_' + imageIndex"-->
-<!--                   :style="{ backgroundImage: `url(${image.image})` }">-->
-<!--              </div>-->
-<!--            </VueSlickCarousel>-->
-<!--          </template>-->
-<!--        </client-only>-->
+        <!--        <client-only>-->
+        <!--          <template v-if="lookBooks.length">-->
+        <!--            <VueSlickCarousel ref="c1"-->
+        <!--                              id="zoom-area"-->
+        <!--                              v-bind="sliderSettings">-->
+        <!--              <div :class="['slide']"-->
+        <!--                   v-for="(image, imageIndex) in lookBooks"-->
+        <!--                   :key="'deskList_' + imageIndex"-->
+        <!--                   :style="{ backgroundImage: `url(${image.image})` }">-->
+        <!--              </div>-->
+        <!--            </VueSlickCarousel>-->
+        <!--          </template>-->
+        <!--        </client-only>-->
       </div>
     </div>
   </section>
@@ -95,22 +95,23 @@ export default {
     this.$store.commit('settingsModule/setContentLoad', false);
   },
   created() {
+    this.$store.commit('preLoaderModule/setPreloader', true);
+    if(process.client) {
       this.$axios.get('/look-book/season')
         .then((res) => {
           this.lookBookSeasons = res.data.data
-          if(this.lookBookSeasons.length)
+          if (this.lookBookSeasons.length)
             this.currentSeason = this.lookBookSeasons[0]
         })
-    .finally(()=>{
-      this.loadLookBook();
-    })
-
-    this.$store.commit('preLoaderModule/setPreloader', true);
-
+        .finally(() => {
+          this.loadLookBook();
+          this.$store.commit('preLoaderModule/setPreloader', false);
+        })
+    }
   },
   methods: {
     loadLookBook(){
-      if(this.currentSeason){
+      if(this.currentSeason && process.client){
         this.sliderSettings = [];
         this.$axios.get('/look-book/'+this.currentSeason.id)
           .then((res) => {

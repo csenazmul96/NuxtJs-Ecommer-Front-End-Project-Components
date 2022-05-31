@@ -18,28 +18,30 @@
     <div class="header_search_details" v-if="showSearchResult && searchedItems.length">
       <div class="h_s_details_inner_full_width">
         <p>Product Search</p>
-        <ul>
-          <li v-for="(searchedItem, searchedItemIndex) in searchedItems" :key="'deskSearchedItemIndex_'+searchedItemIndex">
-            <nuxt-link :to="{ name: 'product-slug', params: { slug: searchedItem.slug }}">
-              <template v-if="$auth.loggedIn">
-                <img v-if="searchedItem.images.length" :src="searchedItem.images[0].thumbs_image" class="img-fluid">
-                <img v-else src="/images/no-image.png" class="img-fluid" alt="Wholesale women's clothing Davi & Dani">
-              </template>
-              <img v-else :src="defaultImage" class="img-fluid" alt="Wholesale women's clothing Davi & Dani">
-            </nuxt-link>
-            <div class="a_r_text">
-              <h3>
-                <nuxt-link :to="{ name: 'product-slug', params: { slug: searchedItem.slug }}">
-                  {{ searchedItem.name ? searchedItem.name : 'No Specific Name' }}
-                </nuxt-link>
-              </h3>
-              <p>
-                <span v-if="$auth.loggedIn">USD ${{ searchedItem.price }}</span>
-                <span v-else><router-link :to="{name:'login'}">Login</router-link></span>
-              </p>
-            </div>
-          </li>
-        </ul>
+        <div class="header_search_scroll">
+          <ul>
+            <li v-for="(searchedItem, searchedItemIndex) in searchedItems" :key="'deskSearchedItemIndex_'+searchedItemIndex">
+              <nuxt-link :to="{ name: 'product-slug', params: { slug: searchedItem.slug }}">
+                <template v-if="$auth.loggedIn">
+                  <img v-if="searchedItem.images.length" :src="searchedItem.images[0].thumbs_image" class="img-fluid">
+                  <img v-else src="/images/no-image.png" class="img-fluid" alt="Wholesale women's clothing Davi & Dani">
+                </template>
+                <img v-else :src="defaultImage" class="img-fluid" alt="Wholesale women's clothing Davi & Dani">
+              </nuxt-link>
+              <div class="a_r_text">
+                <h3>
+                  <nuxt-link :to="{ name: 'product-slug', params: { slug: searchedItem.slug }}">
+                    {{ searchedItem.name ? searchedItem.name : 'No Specific Name' }}
+                  </nuxt-link>
+                </h3>
+                <p>
+                  <span v-if="$auth.loggedIn">USD ${{ searchedItem.price }}</span>
+                  <span v-else><router-link :to="{name:'login'}">Login</router-link></span>
+                </p>
+              </div>
+            </li>
+          </ul>
+        </div>
         <nuxt-link class="btn_common" :to="{ name: 'search', query: { q: searchString } }">
           View All Product
         </nuxt-link>
@@ -87,3 +89,11 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+  .header_search_scroll{
+    max-height: 550px;
+    overflow: auto;
+    margin-bottom: 20px;
+  }
+</style>

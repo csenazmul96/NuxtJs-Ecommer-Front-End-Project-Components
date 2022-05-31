@@ -1,9 +1,9 @@
 <template>
   <div class="inner" v-if="video">
-    <div class="inner_wrap">
-      <nuxt-link :to="{name:'davi-tv-id', params:{id:video.id}}">
+    <div class="inner_wrap" @click="playVideo(video.id)">
+      <a href="javascript:void(0)">
         <div class="slide_img">
-          <img :src="thumb ? thumb : '/images/play.png'" class="width_full" alt="">
+          <img :src="video.preview_thumbs ? video.preview_thumbs : (thumb ? thumb : '/images/play.png')" class="width_full" alt="">
           <img v-if="video.preview_gif" :src="video.preview_gif" class="width_full on_hover" alt="">
         </div>
         <div class="play">
@@ -19,7 +19,7 @@
             <li>{{ video.start_at_format }}</li>
           </ul>
         </div>
-      </nuxt-link>
+      </a>
     </div>
   </div>
 </template>
@@ -37,5 +37,10 @@ export default {
       thumb: 'settingsModule/getDaviTvVideoThumb',
     }),
   },
+  methods:{
+    playVideo(id){
+      this.$emit('playVideo', id)
+    }
+  }
 }
 </script>

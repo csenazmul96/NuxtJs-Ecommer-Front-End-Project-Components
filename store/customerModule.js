@@ -1,7 +1,7 @@
 export const state = () => ({
   customerDetails: null,
   shippingAddress: null,
-  billingAddress: null,
+  billingAddress: null
 });
 
 export const mutations = {

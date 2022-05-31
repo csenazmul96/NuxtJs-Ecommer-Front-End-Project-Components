@@ -24,6 +24,7 @@
                 <div class="slide"
                      v-for="(image, imageIndex) in itemImages"
                      :key="'deskThumbs_' + imageIndex"
+                     :alt="'wholesale clothing ' + item.name.toLowerCase() + ' davi & dani'"
                      :style="{ backgroundImage: `url(${image.thumbs_image}), url(${image.thumbs_image})` }" @click.prevent="thumbsClick(imageIndex)">
                 </div>
                 <div v-if="item.video" @click.prevent="thumbsClick(999)">
@@ -36,11 +37,11 @@
               </VueSlickCarousel>
             </template>
             <template v-else-if="$auth.loggedIn && !itemImages.length">
-              <img v-if="item.images.length" :src="item.images[0].thumbs_image" alt="Wholesale women's clothing Davi & Dani">
-              <img v-else :src="defaultImage" alt="Wholesale women's clothing Davi & Dani">
+              <img v-if="item.images.length" :src="item.images[0].thumbs_image" alt="wholesale clothing davi & dani">
+              <img v-else :src="defaultImage" alt="wholesale clothing davi & dani">
             </template>
             <template v-else>
-              <img :src="defaultImage" alt="Wholesale women's clothing Davi & Dani">
+              <img :src="defaultImage" alt="wholesale clothing davi & dani">
             </template>
           </div>
           <div class="single_img_wrap">
@@ -52,6 +53,7 @@
                 <div :class="['slide', {zoom: !screenWidth || screenWidth > 1024}]"
                      v-for="(image, imageIndex) in itemImages"
                      :data-src="image.compressed_image"
+                     :alt="'wholesale clothing '+ item.name.toLowerCase() + ' davi & dani'"
                      :key="'deskList_' + imageIndex"
                      :ref="'zoom_'+imageIndex"
                      :style="{ backgroundImage: `url(${image.compressed_image}), url(${image.compressed_image_sf})` }">
@@ -67,11 +69,11 @@
               </VueSlickCarousel>
             </template>
             <template v-else-if="$auth.loggedIn && !itemImages.length">
-              <img v-if="item.images.length" :src="item.images[0].compressed_image" alt="Wholesale women's clothing Davi & Dani">
-              <img v-else :src="defaultImage" alt="Wholesale women's clothing Davi & Dani">
+              <img v-if="item.images.length" :src="item.images[0].compressed_image" alt="wholesale clothing Davi & Dani">
+              <img v-else :src="defaultImage" alt="wholesale clothing Davi & Dani">
             </template>
             <template v-else>
-              <img :src="defaultImage" alt="">
+              <img :src="defaultImage" alt="wholesale clothing Davi & Dani">
             </template>
           </div>
         </client-only>
@@ -114,7 +116,7 @@
                 <div class="pack_ratio_inner_wrap">
                   <div class="pack_ratio_inner d_flex_center">
                     <div class="num_count_wrapper">
-                      <template v-if="$auth.loggedIn">
+                      <template v-if="$auth.loggedIn && cartForm.colors.length">
                         <div class="num_count" v-if="inv.availability !== '2' && inv.status">
                           <div class="minus">
                             <button class="btn btn-default" @click.prevent="changeQty(cartForm.colors.find((c) => c.id === inv.color_id))">
@@ -184,8 +186,7 @@
       </div>
     </section>
 
-
-    <product-review-component :product="item" v-if="item" @getItemDetails="getItemDetails"></product-review-component>
+    <!--    <product-review-component :product="item" v-if="item" @getItemDetails="getItemDetails"></product-review-component>-->
 
     <section class="related_product_area" v-if="item && relatedItems.length">
       <div class="related_product_title">
@@ -204,8 +205,8 @@
             <div class="home_slider_inner" v-for="(product, productKey) in relatedItems" :key="'product_' + productKey">
               <div class="home_slider_inner_content">
                 <nuxt-link :to="{ name: 'product-slug', params: { slug: product.slug }}">
-                  <img v-if="$auth.loggedIn && product.images.length" :src="product.images[0].compressed_image" class="img-fluid">
-                  <img v-else :src="defaultImage" class="img-fluid" alt="Wholesale women's clothing Davi & Dani">
+                  <img v-if="$auth.loggedIn && product.images.length" :src="product.images[0].compressed_image" :alt="'wholesale clothing ' + product.name + ' davi & dani'" class="img-fluid">
+                  <img v-else :src="defaultImage" class="img-fluid" alt="wholesale clothing davi & dani">
 
                   <h2>{{ product.name ? product.name : 'No Specific Name' }}</h2>
                   <p>{{ product.style_no }} |
@@ -235,8 +236,7 @@ export default {
   data() {
     return {
       screenWidth: null,
-      title: 'dfdf',
-      item: null,
+      title: '',
       thumbsSliderShow:false,
       itemImages: [],
       activeColor: null,
@@ -278,15 +278,78 @@ export default {
         focusOnSelect: false,
         infinite: false,
       },
+      itemOgContent : null
     }
   },
   head() {
     return {
-      title: (this.item ? this.item.name : '') + ' - Davi & Dani',
+      title: this.itemMetaTitle(),
       meta: [
         {
+          name: 'title',
+          content: this.itemMetaTitle()
+        },
+        {
           name: 'description',
-          content: (this.item ? this.item.name : '') + ' is available at Davi &amp; Dani with the best wholesale price in the USA.'
+          content: this.itemMetaDescription()
+        },
+        {
+          property: 'og:locale',
+          content: 'en_US'
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:title',
+          content: this.itemMetaTitle()
+        },
+        {
+          property: 'og:description',
+          content: this.itemMetaDescription()
+        },
+        {
+          property: 'og:url',
+          content: 'https://davidani.com' + this.$route.fullPath
+        },
+        {
+          property: 'og:site_name',
+          content: 'Davi & Dani'
+        },
+        {
+          property: 'og:image',
+          content: this.itemOgContent ? this.itemOgContent.images[0].compressed_image : ''
+        },
+        {
+          property: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          property: 'twitter:title',
+          content: this.itemMetaTitle()
+        },
+        {
+          property: 'twitter:description',
+          content: this.itemMetaDescription()
+        },
+        {
+          property: 'twitter:url',
+          content: 'https://davidani.com' + this.$route.fullPath
+        },
+        {
+          property: 'twitter:image',
+          content: this.itemOgContent ? this.itemOgContent.images[0].compressed_image : ''
+        }
+      ],
+      link: [
+        {
+          rel: 'canonical',
+          href: 'https://davidani.com' + this.$route.fullPath,
         }
       ]
     }
@@ -294,6 +357,10 @@ export default {
   created() {
     if (process.client) {
       this.screenWidth = window.innerWidth;
+      setTimeout(()=>{
+        this.$store.commit('preLoaderModule/setPreloader', false);
+      }, 500)
+
     }
   },
   updated() {
@@ -302,15 +369,24 @@ export default {
     }
   },
   async fetch() {
-    await this.getItemDetails();
+    if(!this.item) {
+      await this.getItemDetails()
+    };
+    // await this.getItemDetails();
+    await this.productOgContentDetails();
+    await this.$axios.get('/item/' + this.$route.params.slug + '/related')
+      .then((res) => {
+        this.relatedItems = res.data.data
 
-    this.$axios.get('/item/' + this.$route.params.slug + '/related')
-      .then((res) => this.relatedItems = res.data.data)
+      })
       .catch(() => {});
   },
   mounted() {
     if (process.client) {
       $(document).mouseup();
+    }
+    if (process.client && this.item) {
+      this.loadProductAccesories()
     }
   },
   computed: {
@@ -318,6 +394,7 @@ export default {
       user: 'authModule/getUser',
       defaultImage: 'settingsModule/getDefaultImage',
       preloader: 'preLoaderModule/preloader',
+      item: 'Products/getSingleProduct',
     }),
     totalPack() {
       if (this.item)
@@ -339,6 +416,101 @@ export default {
     }
   },
   methods: {
+    itemMetaTitle(){
+      let itemName = this.item ? this.item.name : '';
+      if(itemName){
+        let metaTitleFormated = itemName;
+        metaTitleFormated = metaTitleFormated.toLowerCase().replace(/\b[a-z]/g, function(letter) {
+          return letter.toUpperCase();
+        });
+
+        let metaTitle = metaTitleFormated + ' - Davi & Dani';
+        return metaTitle;
+      }else{
+        let metaTitle = 'This Item - Davi & Dani';
+        return metaTitle;
+      }
+    },
+    itemMetaDescription(){
+      let itemCategory = this.item ? this.item.categories : '';
+      if(itemCategory){
+        if(itemCategory[0].parent){
+          if((itemCategory[0].parent.slug == 'bestofbest') || (itemCategory[0].parent.slug == 'swimwear')){
+            let itemName = this.item ? this.item.name : '';
+            if(itemName){
+              let metaDescriptionSmall = itemName.toLowerCase().trim();
+              let metaDescription = 'Wholesale ' + ''+ metaDescriptionSmall +'' + ' is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+              return metaDescription;
+            }else{
+              let metaDescription = 'Wholesale this item is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+              return metaDescription;
+            }
+          }else if(itemCategory[0].parent.slug == 'pre-order'){
+            let itemName = this.item ? this.item.name : '';
+            if(itemName){
+              let metaDescriptionSmall = itemName.toLowerCase().trim();
+              let metaDescriptionFormated = metaDescriptionSmall.charAt(0).toUpperCase() + metaDescriptionSmall.slice(1);
+              let metaDescription = ''+ metaDescriptionFormated +'' + ' is available at Davi & Dani which is one of the fastest growing wholesale clothing vendors in the United States, providing the best wholesale price on .';
+              return metaDescription;
+            }else{
+              let metaDescription = 'Wholesale this item is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+              return metaDescription;
+            }
+          }else if(itemCategory[0].parent.slug == 'regular'){
+            let itemName = this.item ? this.item.name : '';
+            if(itemName){
+              let metaDescriptionSmall = itemName.toLowerCase().trim();
+              let metaDescriptionFormated = metaDescriptionSmall.charAt(0).toUpperCase() + metaDescriptionSmall.slice(1);
+              let metaDescription = ''+ metaDescriptionFormated +'' + ' is available at Davi & Dani which is the USA fastest growing wholesale clothing vendor with a commitment to providing a wide variety of wholesale womens dresses at the lowest possible prices.';
+              return metaDescription;
+            }else{
+              let metaDescription = 'Wholesale this item is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+              return metaDescription;
+            }
+          }else if(itemCategory[0].parent.slug == 'plus-size'){
+            let itemName = this.item ? this.item.name : '';
+            if(itemName){
+              let metaDescriptionSmall = itemName.toLowerCase().trim();
+              let metaDescription = 'Wholesale ' + ''+ metaDescriptionSmall +'' + ' by Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale ladies dresses.';
+              return metaDescription;
+            }else{
+              let metaDescription = 'Wholesale this item is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+              return metaDescription;
+            }
+          }else{
+            let itemName = this.item ? this.item.name : '';
+            if(itemName){
+              let metaDescriptionSmall = itemName.toLowerCase().trim();
+              let metaDescription = 'Wholesale ' + ''+ metaDescriptionSmall +'' + ' is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+              return metaDescription;
+            }else{
+              let metaDescription = 'Wholesale this item is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+              return metaDescription;
+            }
+          }
+        }else{
+          let itemName = this.item ? this.item.name : '';
+          if(itemName){
+            let metaDescriptionSmall = itemName.toLowerCase().trim();
+            let metaDescription = 'Wholesale ' + ''+ metaDescriptionSmall +'' + ' is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+            return metaDescription;
+          }else{
+            let metaDescription = 'Wholesale this item is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+            return metaDescription;
+          }
+        }
+      }else{
+        let itemName = this.item ? this.item.name : '';
+        if(itemName){
+          let metaDescriptionSmall = itemName.toLowerCase().trim();
+          let metaDescription = 'Wholesale ' + ''+ metaDescriptionSmall +'' + ' is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+          return metaDescription;
+        }else{
+          let metaDescription = 'Wholesale this item is available at Davi & Dani, the fastest growing wholesale clothing vendor in the USA, supplying the best wholesale prices for wholesale female dresses.';
+          return metaDescription;
+        }
+      }
+    },
     thumbsClick(i){
       let self = this
       let indexNumber = 0;
@@ -358,37 +530,65 @@ export default {
     },
     async getItemDetails(){
       this.$store.commit('preLoaderModule/setPreloader', true);
-      this.$store.commit('settingsModule/setContentLoad', false);
-
-      await this.$axios.get('/item/' + this.$route.params.slug)
-        .then((res) => {
-          this.item = res.data.data;
-          if(!this.item)
-            return this.$router.push({name:'index'})
-          this.activeColor = res.data.data.first_color && res.data.data.first_color.color_id ? res.data.data.first_color.color_id : null;
-          this.cartForm.item = {...this.item};
-          this.item.colors.forEach((c) => {
-            this.cartForm.colors.push({...c, ...{quantity: 0}, ...{indicator: 'web'}});
-          });
-
-          let color = this.item.colors[0];
-          this.getColorItemImage(this.activeColor ? this.activeColor : color.id, this.item.images)
-
-          this.sliderSettings.slidesToShow = 2;
-          this.sliderSettings2.slidesToShow = 2;
-          this.$nextTick(() => {
-            this.sliderSettings.slidesToShow = 1;
-            this.sliderSettings2.slidesToShow = 5;
-          })
-
-          this.initZoom();
-
+      await this.$store.dispatch('Products/LoadSingleProduct', this.$route.params.slug)
+        .finally(()=>{
           this.$store.commit('preLoaderModule/setPreloader', false);
-          this.$store.commit('settingsModule/setContentLoad', true);
         })
-        .catch(() => {
-          this.$root.error({'statusCode': 404, 'message': 'Not Found.'});
+      // this.$store.commit('preLoaderModule/setPreloader', true);
+      // this.$store.commit('settingsModule/setContentLoad', false);
+      //
+      // await this.$axios.get('/item/' + this.$route.params.slug)
+      //   .then((res) => {
+      //     this.item = res.data.data;
+      //     if(!this.item)
+      //       return this.$router.push({name:'index'})
+      //     this.activeColor = res.data.data.first_color && res.data.data.first_color.color_id ? res.data.data.first_color.color_id : null;
+      //     this.cartForm.item = {...this.item};
+      //     this.item.colors.forEach((c) => {
+      //       this.cartForm.colors.push({...c, ...{quantity: 0}, ...{indicator: 'web'}});
+      //     });
+      //
+      //     let color = this.item.colors[0];
+      //     this.getColorItemImage(this.activeColor ? this.activeColor : color.id, this.item.images)
+      //
+      //     this.sliderSettings.slidesToShow = 2;
+      //     this.sliderSettings2.slidesToShow = 2;
+      //     this.$nextTick(() => {
+      //       this.sliderSettings.slidesToShow = 1;
+      //       this.sliderSettings2.slidesToShow = 5;
+      //     })
+      //
+      //     this.initZoom();
+      //
+      //     this.$store.commit('preLoaderModule/setPreloader', false);
+      //     this.$store.commit('settingsModule/setContentLoad', true);
+      //   })
+      //   .catch(() => {
+      //     this.$root.error({'statusCode': 404, 'message': 'Not Found.'});
+      //   });
+    },
+    loadProductAccesories(){
+      if(!this.item) {
+        return this.$router.push({name: 'index'})
+      } else {
+        this.activeColor = this.item.first_color && this.item.first_color.color_id ? this.item.first_color.color_id : null;
+        this.cartForm.item = {...this.item};
+        this.item.colors.forEach((c) => {
+          this.cartForm.colors.push({...c, ...{quantity: 0}, ...{indicator: 'web'}});
         });
+
+        let color = this.item.colors[0];
+        this.getColorItemImage(this.activeColor ? this.activeColor : color.id, this.item.images)
+
+        this.sliderSettings.slidesToShow = 2;
+        this.sliderSettings2.slidesToShow = 2;
+        this.$nextTick(() => {
+          this.sliderSettings.slidesToShow = 1;
+          this.sliderSettings2.slidesToShow = 5;
+        })
+
+        this.initZoom();
+      }
     },
     getColorImage(path, item){
       let data = null;
@@ -438,8 +638,8 @@ export default {
 
             this.errorMsg = []
           }).catch((eee)=>{
-            this.errorMsg = eee.error;
-          })
+          this.errorMsg = eee.error;
+        })
           .finally(()=>{
             if(process.client){
               if(window.outerWidth > 1024){
@@ -471,6 +671,16 @@ export default {
       this.initZoom();
 
       this.initZoom();
+    },
+    async productOgContentDetails(){
+      await this.$axios.get('/og-item-details/' + this.$route.params.slug)
+        .then((res) => {
+          this.itemOgContent = res.data.data;
+        })
+        .catch(() => {
+          // this.$router.push({name:'index'})
+          this.$store.commit('preLoaderModule/setPreloader', false);
+        });
     }
   }
 }

@@ -1,75 +1,61 @@
 <template>
-  <div class="my_acc_container">
-    <h2 class="my_acc_subtitle">FACEBOOK LOGIN</h2>
+  <div class="d_flex_start">
     <client-only>
-        <v-facebook-login  v-model="fb.model"
-            class="btn btn_grey btn_custom"
-            :app-id="fb.app_id"
-            :version="fb.version"
-            :login-options="fb.options"
-            @sdk-init="handleSdkInit"
-            @login="fbLogin"></v-facebook-login>
+      <button v-if="customer && !customer.fb_user_id" @click.prevent="fbLogin" class="btn facebook_default_btn">
+        <img width="24px" src="/images/fb.png" alt="">
+        <span>Log in With Facebook</span>
+      </button>
+      <button v-if="customer && customer.fb_user_id" class="btn facebook_default_btn fb_loged_in">
+        <img src="/images/fb.png" class="fb_img" alt="">
+        <span>{{ customer.fb_name }}</span>
+        <img class="fb_profile" v-if="customer.fb_image" :src="customer.fb_image" alt="">
+      </button>
+      <button v-if="customer && customer.fb_user_id" @click.prevent="fbLogout" class="btn facebook_default_btn logout">
+        <span><i class="fas fa-sign-out-alt"></i></span>
+      </button>
     </client-only>
   </div>
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
-    middleware: 'auth',
-    name: "Facebook",
-    components: {
-      VFacebookLogin: () =>
-        process.client ? import('vue-facebook-login-component') : null,
-    },
-    data(){
-        return {
-            fb: {
-                app_id: '2088893704619503',
-                version: 'v12.0',
-                options: { scope: 'email' },
-                FB: {},
-                scope: {},
-                model: {},
-                user_id: null,
-            },
+  middleware: 'auth',
+  name: "Facebook",
+  computed: {
+    ...mapGetters({
+      customer: 'customerModule/getCustomerDetails',
+    }),
+  },
+  methods: {
+    fbLogin() {
+      let self = this;
+      window.FB.login(function(response) {
+        if (response.authResponse) {
+          self.fbLoginResponse(response.authResponse)
         }
+      }, {
+        scope: 'public_profile,email'
+      });
     },
-    methods: {
-        handleSdkInit({ FB, scope }) {
-            this.fb.FB = FB
-            this.fb.scope = scope
-
-            FB.getLoginStatus((response) => {
-                if (response.status === 'connected') {
-                    this.fbLoginResponse(response);
-                }
-            });
-        },
-        fbLogin(response) {
-            if (response) {
-                this.fbLoginResponse(response);
-            }
-        },
-        fbLoginResponse(response) {
-            this.fb.user_id = response.authResponse.userID;
-
-            let formData = {};
-            formData.fb_user_id = response.authResponse.userID
-
-            this.$axios.post('/save-facebook-credentials', formData)
-            .then(()=>{
-
-            })
-            .catch((err) => {
-                this.showFailMsg("Something went wrong!");
-            })
-        },
+    fbLoginResponse(response) {
+      this.$axios.post('/save-facebook-credentials', {
+        fb_user_id: response.userID,
+        access_token: response.accessToken,
+      })
+        .then((response)=>{
+          this.$store.dispatch('customerModule/dispatchCustomerDetails')
+        })
+        .catch((err) => {
+          this.showFailMsg("Something went wrong!");
+        })
+    },
+    fbLogout(){
+      this.$axios.get('/remove-facebook-credentials').then(()=>{
+        this.$store.dispatch('customerModule/dispatchCustomerDetails')
+      })
     }
+  }
 }
 </script>
-
-<style scoped>
-    .btn_custom{
-        padding: 0 10px !important;
-    }
-</style>

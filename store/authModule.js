@@ -1,10 +1,14 @@
 export const state = () => ({
   user: null,
+  userLoginStatus: false,
 });
 
 export const mutations = {
   setUser(state, payload) {
     state.user = payload;
+  },
+  setUserLoginStatus(state, payload) {
+    state.userLoginStatus = payload;
   },
 }
 
@@ -21,7 +25,7 @@ export const actions = {
       dispatch('resetUser');
     }
   },
-  login({dispatch}, payload) {
+  login({dispatch, commit}, payload) {
     return new Promise(async (resolve, reject) => {
       dispatch('resetUser');
 
@@ -29,6 +33,8 @@ export const actions = {
         data: payload
       }).then((response) => {
         let user = response.data.data;
+        commit('setUserLoginStatus', true)
+        window.localStorage.removeItem('welcome_msg_status');
         dispatch('setNewUser', user);
         localStorage.setItem('loginTime', 0);
 
@@ -48,11 +54,12 @@ export const actions = {
       });
     });
   },
-  logout({dispatch}) {
+  logout({dispatch, commit}) {
     return new Promise(async (resolve, reject) => {
       await this.$auth.logout()
       dispatch('resetUser');
-
+      commit('setUserLoginStatus', false)
+      window.localStorage.removeItem('welcome_msg_status');
       resolve();
     });
   },
@@ -71,4 +78,5 @@ export const actions = {
 
 export const getters = {
   getUser: (state) => state.user,
+  getUserLoginStatus: (state) => state.userLoginStatus,
 }

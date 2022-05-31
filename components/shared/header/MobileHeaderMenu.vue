@@ -11,13 +11,14 @@
               <div class="show_from_left" :id="'mobSubCategory_'+category.id" :key="'mobSubCategory_'+categoryIndex">
                 <ul class="mobile_submenu">
                   <li @click.prevent="mobCloseMenu">
-                    <nuxt-link :to="{ name: 'category-slug', params: { slug: category.slug }}">{{ capitalize(category.name) }}</nuxt-link>
+                    <a role="button" class="cursor_pointer" @click="loadProducts(category.slug)">{{ capitalize(category.name) }}</a>
                     <span class="back" @click.prevent="mobBackToTopMenu($event)">Back</span>
                   </li>
                   <template v-for="(subCategory, subCategoryIndex) in category.sub_categories">
                     <template>
                       <li :key="'mobSubCategoryIndex_'+subCategoryIndex" @click.prevent="mobCloseMenu">
-                        <nuxt-link :to="{ name: 'category-slug-sub_slug', params: { slug: category.slug, sub_slug: subCategory.slug }}">{{ capitalize(subCategory.name) }}</nuxt-link>
+                        <a role="button" class="cursor_pointer" @click="loadProducts(category.slug, subCategory.slug)">{{ capitalize(subCategory.name) }}</a>
+<!--                        <nuxt-link :to="{ name: 'category-slug-sub_slug', params: { slug: category.slug, sub_slug: subCategory.slug }}">{{ capitalize(subCategory.name) }}</nuxt-link>-->
                       </li>
                     </template>
                   </template>
@@ -26,7 +27,8 @@
             </template>
             <template v-else>
               <li @click.prevent="mobCloseMenu">
-                <nuxt-link :to="{ name: 'category-slug', params: { slug: category.slug }}">{{ capitalize(category.name) }}</nuxt-link>
+                <a role="button" class="cursor_pointer" @click="loadProducts(category.slug)">{{ capitalize(category.name) }}</a>
+<!--                <nuxt-link :to="{ name: 'category-slug', params: { slug: category.slug }}">{{ capitalize(category.name) }}</nuxt-link>-->
               </li>
             </template>
           </template>
@@ -82,6 +84,22 @@ export default {
     }
   },
   methods: {
+    loadProducts(cat_slug, subcat_slug = ''){
+      let slug = cat_slug
+      if(subcat_slug != '')
+        slug = slug + '/' + subcat_slug
+
+      this.$store.commit('preLoaderModule/setPreloader', true);
+      Promise.all([
+        this.$store.dispatch('Products/LoadProduct', {slug, params: null}),
+        this.$store.dispatch('Products/LoadCategory', slug),
+      ]).then(()=>{
+        if(subcat_slug != '')
+          this.$router.push({ name: 'category-slug-sub_slug', params: { slug: cat_slug, sub_slug: subcat_slug }})
+        else
+          this.$router.push({ name: 'category-slug', params: { slug: cat_slug }})
+      })
+    },
     mobExpandNextMenu(e) {
       if ($(e.target).hasClass('back') == false) {
         var mNavId = $(e.target).closest('li').data('target');

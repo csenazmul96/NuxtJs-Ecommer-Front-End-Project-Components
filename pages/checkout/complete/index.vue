@@ -21,12 +21,32 @@
 <script>
 import InstagramSection from "../../../components/shared/InstagramSection";
 export default {
-  // middleware: 'reset-password',
+  middleware: 'auth',
   name: "index",
   components: {InstagramSection},
   data(){
     return {
       orderNumber: null,
+      prevRoute: null
+    }
+  },
+  beforeRouteEnter(to, from, next) {
+      next(vm => {
+          vm.prevRoute = from.name;
+      });
+  },
+  mounted() {
+    if (this.prevRoute != 'checkout') {
+      this.$router.push({path:'/'})
+    }
+
+    if (process.browser) {
+      if(process.env.NUXT_ENV_STATUS == 'production'){
+        this.$gtag('event', 'conversion', {
+          send_to: 'AW-597806317/eEojCO3y2rcDEO2Zh50C',
+          transaction_id: '',
+        })
+      }
     }
   },
   beforeCreate() {
@@ -45,7 +65,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

@@ -10,6 +10,10 @@ export const state = () => ({
   liveData: null,
   daviTvVideoBanner: null,
   daviTvVideoThumb: null,
+  pubnubEvents: null,
+  topNotificationContent: null,
+  topNotificationColor: null,
+  topNotificationBackground: null,
 });
 
 export const mutations = {
@@ -25,6 +29,9 @@ export const mutations = {
   setContentLoad(state, payload) {
     state.contentLoad = payload
   },
+  setPubnubEvents(state, payload) {
+    state.pubnubEvents = payload
+  },
   setLiveContent(state, payload) {
     state.liveContent = payload
   },
@@ -33,7 +40,12 @@ export const mutations = {
   },
   setLiveData(state, payload) {
     state.liveData = payload
-  }
+  },
+  setTopNotification(state, payload) {
+    state.topNotificationContent = payload.content_1
+    state.topNotificationColor = payload.color
+    state.topNotificationBackground = payload.background
+  },
 }
 export const actions = {
   getLiveVideo({commit, rootState}) {
@@ -46,7 +58,7 @@ export const actions = {
           commit('setShowLiveNow', false);
           commit('setLiveData', null);
         }
-      })
+      }).catch(() => {})
   },
 }
 
@@ -63,4 +75,8 @@ export const getters = {
   getLiveData: (state) => state.liveData,
   getDaviTvVideoBanner: (state) => state.daviTvVideoBanner,
   getDaviTvVideoThumb: (state) => state.daviTvVideoThumb,
+  getPubnubEvents: (state) => state.pubnubEvents,
+  getTopNotificationContent: (state) => state.topNotificationContent,
+  getTopNotificationColor: (state) => state.topNotificationColor,
+  getTopNotificationBackground: (state) => state.topNotificationBackground,
 }

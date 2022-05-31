@@ -1,14 +1,21 @@
 <template>
-  <div class="live_notification" :style="{background:settings.content_2 ? settings.content_2 : '#fff'}" v-if="settings">
-    <div class="live_notification_inner">
-      <div class="live_text">
-        <router-link v-if="$auth.loggedIn" :to="{name:'index'}"><span>{{ settings.content }}</span></router-link>
-        <router-link v-else :to="{name:'login'}"><span>{{ settings.content }}</span></router-link>
+  <section id="live_notice_section" >
+    <div class="live_notification">
+      <div class="live_notification_inner">
+        <div class="live_text" id="reload_streaming_check">
+           <nuxt-link v-if="!$auth.loggedIn" :to="{name: 'login'}">We are Live Now</nuxt-link>
+           <a class="live_play_notice" v-else href="javascript:void(0)">We are Live Now</a>
+        </div>
+        <div class="live_now">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
       </div>
     </div>
-  </div>
+  </section>
 </template>
-
 <script>
 import {mapGetters} from "vuex";
 

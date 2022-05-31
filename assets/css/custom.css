@@ -52,6 +52,12 @@
     .product_single_right .add_size .p_quantity input {
         font-size: 16px;
     }
+  .live_popup_img .notice_btn_gorup{
+    display: grid;
+  }
+  .notice_button_no, .notice_button_yes {
+    margin: 10px 0px !important;
+  }
 }
 
 @media(max-width: 1024px) {
@@ -64,4 +70,205 @@
     .add_new_address {
         width: 100%;
     }
+}
+
+.imoji_list{
+  bottom: 37px;
+}
+.play-pause-buttn:before{
+  content: "";
+  font-family: LineIcons;
+  color: #fff;
+  font-size: 45px;
+}
+.custom_play_btn.d_none{
+  display: none !important;
+}
+
+.custom_play_btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#chat_wrap .chat_head ul li.welcome{
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+}
+.upload_video_wrapper{
+  background: #000;
+  padding: 15px;
+}
+.upload_video_wrapper.ly_broadcasting_area .ly_broadcasting_container{
+  /*padding-left: 0;*/
+  background: #fff;
+}
+
+/*@media (max-width: 1024px) {*/
+/*  .upload_video_wrapper.ly_broadcasting_area .ly_broadcasting_container{*/
+/*    padding: 0;*/
+/*  }*/
+/*  .ly_broadcasting_area.ly_broadcasting_area .ly_broadcasting_container .ly_broadcasting_row{*/
+/*    margin: 0 !important;*/
+/*  }*/
+/*  .ly_broadcasting_area.ly_broadcasting_area .custom_video_area .left_video{*/
+/*    padding: 0;*/
+/*  }*/
+/*}*/
+
+.live_video >  .inner_content {
+  position: relative;
+  padding-top: 177.91666666666666%!important;
+}
+.player-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+iframe {
+  width: 100%;
+  height: 100%;
+}
+
+#video_wrap {
+  position: absolute!important;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+#minimize_video iframe{
+  width: 180px;
+  height: 320px;
+}
+.model_open .live_notification_inner .live_now{
+  opacity: 1 !important;
+}
+
+
+.left_video .left_video_inner{
+  padding-top: 56.25%;
+  position: relative;
+  background: black;
+}
+.left_video .left_video_inner iframe{
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.item_price{
+  margin-right: 5px;
+  color: #000 !important;
+  float: right;
+}
+#video_wrap{
+  overflow: hidden;
+}
+.z_index{
+  z-index: 2024;
+}
+
+.notice_btn_gorup{
+  display: flex;
+}
+.notice_button_yes, .notice_button_no{
+  margin: 10px;
+  text-align: center;
+}
+.facebook_default_btn, .facebook_default_btn:hover{
+  background-color: #1877F2;
+  border-radius: 2px;
+  color: #fff;
+  font-weight: bold;
+  min-width: 250px;
+  padding: 0;
+  float: left;
+  height: 40px;
+}
+.facebook_default_btn.logout{
+  padding: 8px;
+  color: #fff;
+  opacity: .8;
+  margin-left: 15px;
+  min-width: 50px;
+  background: #636465;
+}
+.facebook_default_btn.fb_loged_in{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-right:0px;
+  padding: 0 10px ;
+  padding-right: 0;
+  border: none;
+  width: auto;
+  min-width: 250px;
+
+}
+.facebook_default_btn.fb_loged_in  span {
+  padding: 0 10px;
+}
+.facebook_default_btn.fb_loged_in img.fb_img{
+  float: left;
+}
+.facebook_default_btn.fb_loged_in img.fb_profile{
+  height: 40px;
+}
+.header_account_inner .facebook_default_btn{
+  width: 100%;
+  margin-top: 16px;
+}
+
+.product_list_wrap ul li.active{
+  position: fixed;
+  z-index: 2;
+}
+
+.stage61_modal_wrapper{
+  overflow: hidden !important;
+}
+#chat_wrap .chat_head ul li .reply_comment{
+z-index: 2 !important;
+}
+
+
+.live_popup_img p img{
+  width: 100% !important;
+  height: auto !important;
+}
+.bg_gray{
+  background: #F0F0F0;
+}
+
+.product_collapse_mobile {
+  bottom: 3px!important;
+}
+.product_collapse_mobile svg{
+  fill: #fff;
+}
+
+.product_collapse_mobile svg path{
+  fill: #fff;
+  stroke: #fff;
+}
+
+.view_product_moblie .view_product_moblie_wrap .product_list .product_list_wrap ul li .product_inner_list .text {
+  width: 100%;
+}
+
+.fullwindow .stage61_modal_inner{
+  width: 93%;
+  margin: 0 auto;
+}
+.fullwindow .stage61_modal{
+  display: block;
+}
+.fullwindow .stage61_modal_overlay{
+  background: #000;
+}
+
+.cursor_pointer{
+  cursor: pointer;
 }

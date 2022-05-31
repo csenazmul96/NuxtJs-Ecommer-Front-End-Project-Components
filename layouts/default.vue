@@ -1,5 +1,6 @@
 <template>
-  <div :class="[{home_page:$route.name === 'index'}, {'live_notification_on': showLiveNow}]">
+  <div :class="[{home_page:$route.name === 'index'}, {'has_topbar': topNotification }]">
+  <!-- <div :class="[{home_page:$route.name === 'index'}]"> -->
     <header-component></header-component>
     <client-only>
       <pre-loader></pre-loader>
@@ -9,9 +10,21 @@
         <nuxt-link :to="{ name: 'schedule'}">Show Schedule</nuxt-link>
       </div>
     </div>
-    <Nuxt :class="['common_top_padding', {'has_live_notice': showLiveNow}]"></Nuxt>
+    <Nuxt :class="['common_top_padding']"></Nuxt>
     <newsletter v-show="!noSubscription.includes($route.name)"></newsletter>
     <footer-component v-show="!noFooter.includes($route.name)"></footer-component>
+    <!-- live chat start -->
+
+    <livechat-component v-if="liveData && $auth.loggedIn" :liveData="liveData" ref="live" :events="events"></livechat-component>
+    <div class="right_fixed_wrap" v-if="liveData && !$auth.loggedIn">
+      <div class="live_now">
+          <span>
+            <router-link  :to="{name:'login'}">Live</router-link>
+          </span>
+      </div>
+    </div>
+
+    <!-- live chat end -->
   </div>
 </template>
 
@@ -21,9 +34,10 @@ import FooterComponent from "../components/shared/footer/FooterComponent";
 import Newsletter from "../components/shared/NewsLetter";
 import PreLoader from '../components/shared/PreLoader.vue';
 import {mapGetters} from "vuex";
+import LivechatComponent from "../components/livechat/LivechatComponent";
 
 export default {
-  components: {Newsletter, FooterComponent, HeaderComponent, PreLoader},
+  components: {Newsletter, FooterComponent, HeaderComponent, PreLoader, LivechatComponent},
   async mounted() {
     if (process.client) {
       let self = this;
@@ -31,6 +45,11 @@ export default {
       $(window).resize(function() {
         self.minHeight = window.outerHeight;
       });
+
+      setTimeout(() => {
+        this.getLiveStatus();
+      }, 1000);
+
     }
     await this.$store.dispatch('authModule/loadStore');
   },
@@ -38,25 +57,61 @@ export default {
     $route(){
       if (process.client) {
         this.headerCommonMargin();
-        //this.scrollTop();
         $(".show_from_right").removeClass('open_h_menu'); //if route change then close all modal
         $("body").removeClass('overflow_hidden'); //if route change then close all modal
+        window.$('.stage61_model').removeClass('open_animation');
+        window.$('body').removeClass('model_open');
+        window.$('body').removeClass('bg_black');
+        window.$('.stage61_model').removeClass('open_modal');
       }
-    }
+    },
+    'liveData.status': function () {
+      if(process.client && !this.liveData.status){
+        // window.$('body').removeClass('model_open');
+        // window.$('.stage61_model').removeClass('open_modal');
+      }
+    },
+    'userLoginStatus': function () {
+      if(this.liveData && this.userLoginStatus){
+        if(this.user && this.user.fb_user_id){
+          window.$('.stage61_model').addClass('open_animation');
+          window.$('body').addClass('model_open');
+          window.$('.stage61_model').addClass('open_modal');
+          setTimeout (function () {
+            window.$(".we_are_live_now_notice").addClass('open_modal')
+          } , 1000 )
+        }else{
+          window.$('.stage61_model').addClass('open_animation');
+          window.$('body').addClass('model_open');
+          window.$('.stage61_model').addClass('open_modal');
+          setTimeout (function () {
+            window.$(".has_facebook_profile").addClass('open_modal')
+          } , 1000 )
+        }
+      }
+    },
   },
   data(){
     return{
       noFooter: ['checkout'],
       noSubscription: ['checkout'],
       minHeight: 0,
+      pubnub: null,
+      events: null,
     }
   },
   updated() {
     this.headerCommonMargin();
   },
-  created() {
-    this.$store.dispatch('settingsModule/getLiveVideo')
+
+  async created() {
     if (process.client) {
+      let checkAuthUser = localStorage.getItem('auth.user');
+      if(checkAuthUser){
+        this.$store.dispatch('customerModule/dispatchCustomerDetails')
+      }
+
+      this.$store.dispatch('settingsModule/getLiveVideo')
 
       this.$axios.get('https://ipinfo.io/ip')
         .then((response) => {
@@ -85,12 +140,21 @@ export default {
         .then((response)=>{
           this.$store.commit('settingsModule/setDefaultSettings', response.data);
         })
+      
+      this.$axios.get('get/top/notification')
+        .then((response)=>{
+          this.$store.commit('settingsModule/setTopNotification', response.data);
+        })
     }
   },
   computed: {
     ...mapGetters({
       contentLoad: 'settingsModule/getContentLoad',
       showLiveNow: 'settingsModule/getShowLiveNow',
+      liveData: 'settingsModule/getLiveData',
+      userLoginStatus: 'authModule/getUserLoginStatus',
+      user: 'customerModule/getCustomerDetails',
+      topNotification: 'settingsModule/getTopNotificationContent',
     }),
   },
   methods: {
@@ -125,12 +189,31 @@ export default {
         'height': `calc(100% - ${totalHeight}px)`,
       });
     },
+    getLiveStatus(){
+      const self = this;
 
-  }
+      const PubNub = require('pubnub');
+      const uuid = PubNub.generateUUID();
+      this.pubnub = new PubNub({
+        publishKey: process.env.NUXT_ENV_PUBNUB_PUBLISH_KEY,
+        subscribeKey: process.env.NUXT_ENV_PUBNUB_SUBSCRIBE_KEY,
+        uuid: uuid
+      });
+
+      this.pubnub.addListener({
+        message: function(message) {
+          self.$store.commit("settingsModule/setPubnubEvents", message)
+          if (message.message.title === 'live') {
+            self.$store.dispatch('settingsModule/getLiveVideo')
+          }
+        }
+      })
+
+
+      this.pubnub.subscribe({
+        channels: ['1'],
+      });
+    }
+  },
 }
 </script>
-
-<style scoped>
-
-
-</style>

@@ -35,6 +35,32 @@ export const actions = {
       }
     }
   },
+  exportAddToCart({state, commit, rootState}, payload) {
+    let cartItems = [];
+    payload.colors.forEach((color) => {
+      if (color.quantity > 0) {
+        cartItems.push({
+          customer_id: rootState.authModule.user.id,
+          item_id: color.item_id,
+          indicator: color.indicator,
+          color_id: color.color_id,
+          quantity: color.quantity,
+        });
+      }
+    })
+    if (cartItems.length) {
+      if (this.$auth.loggedIn) {
+        return new Promise((resolve, reject) => {
+          this.$axios.post('/carts', {items: cartItems}).then((response) => {
+            commit('setCartItems', response.data.data);
+            resolve(response.data);
+          }).catch((error) => {
+            reject(error.response.data)
+          });
+        });
+      }
+    }
+  },
   removeFromCart({state, commit}, payload) {
     let items = [...state.cartItems];
 

@@ -11,13 +11,15 @@
     <keep-alive>
       <instagram-section></instagram-section>
     </keep-alive>
+    <facebook-login-confirmation-modal></facebook-login-confirmation-modal>
   </div>
 </template>
 <script>
 import InstagramSection from "../../../components/shared/InstagramSection";
+import FacebookLoginConfirmationModal from "../../../components/shared/FacebookLoginConfirmationModal";
 export default {
   name: "index",
-  components: {InstagramSection},
+  components: {InstagramSection,FacebookLoginConfirmationModal},
 }
 </script>
 

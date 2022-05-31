@@ -1,30 +1,33 @@
 <template>
-  <div :class="{home_ct_margin: $route.name === 'index'}">
+  <div :class="[{home_ct_margin: $route.name === 'index'}]">
     <header :class="['header_area fixed-top', {home_header: $route.name === 'index'}]">
-    <live-component v-if="showLiveNow"></live-component>
+      <live-component v-if="showLiveNow"></live-component>
+      <div class="top_notification_wrap" v-else>
+        <p class="header_top_notification" :style="[{'color': topNotificationColor }, {'background': topNotificationBackground }]" v-if="topNotificationContent">{{ topNotificationContent }}</p>
+      </div>
       <div class="main_header cm_header show_desktop">
         <div class="main_header_inner">
           <div class="logo">
-            <nuxt-link v-if="$route.name != 'index'" :to="{name: 'index'}"> <img v-if="whiteLogo" :src="whiteLogo" alt="Wholesale women's clothing Davi & Dani"></nuxt-link>
-            <a v-else href="/"> <img v-if="whiteLogo" :src="whiteLogo" alt="Wholesale women's clothing Davi & Dani"></a>
+            <nuxt-link v-if="$route.name != 'index'" :to="{name: 'index'}"> <img v-if="blackLogo" :src="blackLogo" alt="Wholesale women's clothing Davi & Dani"></nuxt-link>
+            <a v-else href="/"> <img v-if="blackLogo" :src="blackLogo" alt="Wholesale women's clothing Davi & Dani"></a>
           </div>
           <header-menu></header-menu>
           <div class="header_others">
             <ul>
               <li data-toggle="collapse_noslide" data-target="#search" @click.prevent="searchInputTriger">
-                <img class="default" src="/images/search-white.png" alt="Wholesale women's clothing Davi & Dani">
-                <img class="on_scoll" src="/images/search-white.png" alt="Wholesale women's clothing Davi & Dani">
+                <img class="default" src="/images/search.png" alt="Wholesale women's clothing Davi & Dani">
+                <img class="on_scoll" src="/images/search.png" alt="Wholesale women's clothing Davi & Dani">
               </li>
               <header-search ref="searchComponent"></header-search>
               <li data-toggle="collapse_noslide" data-target="#user">
-                <img class="default" src="/images/user-white.png" alt="Wholesale women's clothing Davi & Dani">
-                <img class="on_scoll" src="/images/user-white.png" alt="Wholesale women's clothing Davi & Dani">
+                <img class="default" src="/images/user.png" alt="Wholesale women's clothing Davi & Dani">
+                <img class="on_scoll" src="/images/user.png" alt="Wholesale women's clothing Davi & Dani">
               </li>
               <header-user></header-user>
               <li data-toggle="collapse_noslide" data-target="#cart" class="h_cart" v-if="$auth.loggedIn">
                   <span>
-                      <img class="default" src="/images/cart-white.png" alt="Wholesale women's clothing Davi & Dani">
-                      <img class="on_scoll" src="/images/cart-white.png" alt="Wholesale women's clothing Davi & Dani">
+                      <img class="default" src="/images/cart.png" alt="Wholesale women's clothing Davi & Dani">
+                      <img class="on_scoll" src="/images/cart.png" alt="Wholesale women's clothing Davi & Dani">
                       <b>{{ cartItems.length }}</b>
                   </span>
               </li>
@@ -47,7 +50,6 @@ import MainMobileHeader from "~/components/shared/header/MainMobileHeader";
 import HeaderCart from "~/components/shared/header/HeaderCart";
 import {mapGetters} from "vuex";
 import LiveComponent from "./LiveComponent";
-
 export default {
   components: {LiveComponent, HeaderUserComponent, HeaderMenu, HeaderUser, HeaderCart, HeaderSearch, MainMobileHeader},
   data(){
@@ -59,9 +61,12 @@ export default {
     ...mapGetters({
       cartItems: 'cartModule/getCartItems',
       user: 'authModule/getUser',
-      whiteLogo: 'settingsModule/getWhiteLogo',
+      blackLogo: 'settingsModule/getBlackLogo',
       liveContent: 'settingsModule/getLiveContent',
       showLiveNow: 'settingsModule/getShowLiveNow',
+      topNotificationContent: 'settingsModule/getTopNotificationContent',
+      topNotificationColor: 'settingsModule/getTopNotificationColor',
+      topNotificationBackground: 'settingsModule/getTopNotificationBackground',
     }),
   },
   watch: {
@@ -115,11 +120,15 @@ export default {
     daviLiveTVStyle(){
       if(process.client) {
         if(this.$route.name === 'davi-tv')
-          $("body").addClass('bg_black')
+          $("body").addClass('bg_gray')
         else
-          $("body").removeClass('bg_black')
+          $("body").removeClass('bg_gray')
       }
     }
   }
 }
 </script>
+
+<style scoped>
+
+</style>

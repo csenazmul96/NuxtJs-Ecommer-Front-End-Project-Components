@@ -9,11 +9,16 @@
               <Address></Address>
           </div>
       </div>
-      <facebook></facebook>
+
+      <div class="my_acc_container">
+        <h2 class="my_acc_subtitle">FACEBOOK LOGIN</h2>
+        <facebook></facebook>
+      </div>
       <subscription></subscription>
       <order-list></order-list>
       <store-credit></store-credit>
       <point-history></point-history>
+      <style-export-history></style-export-history>
       <message></message>
       <logout></logout>
     </div>
@@ -33,6 +38,8 @@ import Facebook from "../../components/shared/user/FacebookLogin";
 import Subscription from "../../components/shared/user/Subscription";
 import StoreCredit from "../../components/shared/user/StoreCredit";
 import PointHistory from "../../components/shared/user/PointHistory";
+import StyleExportHistory from "../../components/shared/user/StyleExportHistory";
+import {mapGetters} from "vuex";
 
 export default {
   middleware: 'auth',
@@ -40,11 +47,17 @@ export default {
   components: {
     StoreCredit,
     PointHistory,
+    StyleExportHistory,
     Header, Facebook, Subscription, Logout, Message, OrderList, AccountDetails, Dashboard, Wishlist, Address},
   created() {
     this.$store.dispatch('customerModule/dispatchCustomerDetails')
     this.$store.dispatch('customerModule/dispatchShippingAddress')
     this.$store.dispatch('customerModule/dispatchBillingAddress')
+  },
+  computed: {
+    ...mapGetters({
+      customer: 'customerModule/getCustomerDetails',
+    }),
   },
   watch: {
     $route() {
@@ -74,7 +87,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

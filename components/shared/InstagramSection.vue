@@ -1,6 +1,6 @@
 <template>
   <section class="instagram_area" v-if=" instagramFeeds && instagramFeeds.length">
-    <h1>Follow us on instagram</h1>
+    <h2>Follow us on instagram</h2>
     <div v-if="sectionHeadings.length" class="insta_slider" style="width: 100%;">
       <carousel :autoplay="false" :loop="true" :dots="false" :responsive="{0:{items:2,nav:false , margin : 10},768:{items:3,nav:false, margin : 10}, 1025:{items:5,nav:false, margin : 20}}">
         <div class="instagram_inner" v-for="(insta, i) in instagramFeeds" :key="'insta_'+i">
@@ -44,16 +44,19 @@ export default {
       })
       .catch(() => {});
 
-    this.$axios.get('/instagram/feeds')
-      .then((response) => {
-        this.instagramFeeds = response.data.data
-        if(this.instagramFeeds.length)
-          this.instagramFeeds = this.instagramFeeds.slice(0, 10)
-      })
-      .catch(() => {})
-      .finally(()=>{
-        // this.$store.commit('settingsModule/setContentLoad', true);
-      })
+    if (process.client) {
+      this.$axios.get('/instagram/feeds')
+        .then((response) => {
+          this.instagramFeeds = response.data.data
+          if (this.instagramFeeds.length)
+            this.instagramFeeds = this.instagramFeeds.slice(0, 10)
+        })
+        .catch(() => {
+        })
+        .finally(() => {
+          // this.$store.commit('settingsModule/setContentLoad', true);
+        })
+    }
   },
   methods:{
     sectionName(section_name){

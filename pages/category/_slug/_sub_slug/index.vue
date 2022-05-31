@@ -25,22 +25,21 @@
       </ul>
     </div>
 
-    <filter-component></filter-component>
+    <filter-component @filterProduct="filterProduct"></filter-component>
 
     <div class="product_content">
       <div class="product_wrap">
-        <div class="product_content_wrap" v-if="products.length">
-          <product-component v-for="(product, productKey) in products" :key="'product_' + productKey" :product="product" :height="height"  :imageBlock="$auth.loggedIn ? false : true" :priceBlock="$auth.loggedIn ? false : true"></product-component>
-        </div>
-<!--        <product-load-preloader v-else class="no_result"></product-load-preloader>-->
-
-        <pagination v-if="products.length" :paginateData="paginations" @changePage="changePage"></pagination>
+        <client-only>
+          <template v-if="products.length">
+            <div class="product_content_wrap">
+              <product-component v-for="(product, productKey) in products" :key="'product_' + productKey" :product="product" :height="height"  :imageBlock="$auth.loggedIn ? false : true" :priceBlock="$auth.loggedIn ? false : true"></product-component>
+            </div>
+            <pagination :paginateData="paginations" @changePage="changePage"></pagination>
+          </template>
+        </client-only>
       </div>
     </div>
   </section>
-  <!-- ============================
-      END PRODUCT SECTION
-  ============================== -->
 </template>
 
 <script>
@@ -51,70 +50,149 @@ import Pagination from "@/components/shared/Pagination";
 import ProductLoadPreloader from "../../../../components/shared/ProductLoadPreloader";
 export default {
   components: {ProductLoadPreloader, ProductComponent, FilterComponent, Pagination},
+
+  data() {
+    return {
+      breadcrumbsWidth: null,
+      breadcrumbsShow: false,
+      parentCategory: null,
+      products: [],
+      productLoaded: true,
+      paginations: [],
+      height: null,
+      queryParams: {
+        page: 1,
+        sort: 1,
+      },
+      categoryOgContent: null,
+    }
+  },
+  watch: {
+    'productsByCategory': function () {
+      this.productFilter()
+    },
+    "$route.params.slug": {
+      handler: function(value) {
+        this.productFilter()
+      },
+      deep: true,
+      immediate: true,
+    },
+    "$route.query.page": {
+      handler: function(value) {
+        if(this.$route.query.page) {
+          this.queryParams.page = this.$route.query.page
+          this.sendServerRequest()
+        }
+      },
+      deep: true,
+      immediate: true,
+    },
+  },
   head() {
     return {
       title: this.category && this.category.meta && this.category.meta.title ? this.category.meta.title : process.env.NUXT_ENV_TITLE,
       meta: [
         {
+          name: 'title',
+          content: this.category && this.category.meta && this.category.meta.title ? this.category.meta.title : process.env.NUXT_ENV_TITLE
+        },
+        {
           name: 'description',
           content: this.category && this.category.meta && this.category.meta.description ? this.category.meta.description : process.env.NUXT_ENV_DESCRIPTION
+        },
+        {
+          property: 'og:locale',
+          content: 'en_US'
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:title',
+          content: this.category && this.category.meta && this.category.meta.title ? this.category.meta.title : process.env.NUXT_ENV_TITLE
+        },
+        {
+          property: 'og:description',
+          content: this.category && this.category.meta && this.category.meta.description ? this.category.meta.description : process.env.NUXT_ENV_DESCRIPTION
+        },
+        {
+          property: 'og:url',
+          content: 'https://davidani.com' + this.$route.fullPath
+        },
+        {
+          property: 'og:site_name',
+          content: 'Davi & Dani'
+        },
+        {
+          property: 'og:image',
+          content: this.categoryOgContent ? this.categoryOgContent.images[0].compressed_image : 'https://davidani.com/images/static-product.jpg'
+        },
+        {
+          property: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          property: 'twitter:title',
+          content: this.category && this.category.meta && this.category.meta.title ? this.category.meta.title : process.env.NUXT_ENV_TITLE
+        },
+        {
+          property: 'twitter:description',
+          content: this.category && this.category.meta && this.category.meta.description ? this.category.meta.description : process.env.NUXT_ENV_DESCRIPTION
+        },
+        {
+          property: 'twitter:url',
+          content: 'https://davidani.com' + this.$route.fullPath
+        },
+        {
+          property: 'twitter:image',
+          content: this.categoryOgContent ? this.categoryOgContent.images[0].compressed_image : 'https://davidani.com/images/static-product.jpg'
         }
-      ]
-    }
-  },
-  data() {
-    return {
-      breadcrumbsWidth: null,
-      breadcrumbsShow: false,
-      category: null,
-      parentCategory: null,
-      products: [],
-      paginations:[],
-      height: null,
-      queryParams: {}
+      ],
+      link: [
+        {
+          rel: 'canonical',
+          href: 'https://davidani.com' + this.$route.fullPath,
+        }
+      ],
     }
   },
   computed: {
     ...mapGetters({
       user: 'authModule/getUser',
+      productsByCategory: 'Products/getProductsByCategory',
+      getPagination: 'Products/getPaginations',
+      category: 'Products/getProductCategory',
     }),
   },
-  watch: {
-    $route(to) {
-      if (to.name === 'category-slug-sub_slug') {
-        const newQueryParams = this.getAllQueryParams();
 
-        if (!_.isEqual(newQueryParams, this.queryParams))
-          this.loadProducts();
-
-        this.queryParams = newQueryParams;
-      }
-    }
-  },
-  mounted() {
-    if (process.client) {
-      this.queryParams = this.getAllQueryParams();
-    }
-  },
   beforeCreate() {
     this.$store.commit('settingsModule/setContentLoad', false);
   },
   created() {
-    this.loadProducts();
+    if(!this.products.length) {
+      this.loadProducts();
+    }
+    if(process.client){
+      setTimeout(()=>{
+        this.$store.commit('preLoaderModule/setPreloader', false);
+      }, 500)
+    }
   },
+
   async fetch() {
-    this.products = this.$store.getters["preLoaderModule/getPreProducts"];
+    if(!this.category)
+      this.categoryDetails()
 
-    await this.$axios.get('/categories/'+this.$route.params.slug+'/'+this.$route.params.sub_slug)
-      .then((response) => this.category = response.data.data)
-      .catch(() => {
-        this.$root.error({'statusCode': 404, 'message': 'Not found.'})
-      })
-
-    await this.$axios.get('/categories/'+this.$route.params.slug)
-      .then((response) => this.parentCategory = response.data.data)
-      .catch(() => {})
+    await this.parentCategoryDetails();
+    await this.categoryOgContentDetails();
   },
+
   updated() {
     if (process.client) {
       $('.submenu , .f_bottom').each(function () {
@@ -128,41 +206,23 @@ export default {
     }
   },
   methods: {
+    productFilter(){
+      let slug = this.$route.params.slug+'/'+this.$route.params.sub_slug
+      if (this.productsByCategory && slug in this.productsByCategory) {
+        this.products = this.productsByCategory[slug]
+      } else
+        this.products = [];
+
+      if (this.getPagination && slug in this.getPagination) {
+        this.paginations = this.getPagination[slug]
+      } else
+        this.paginations = [];
+    },
     loadProducts() {
-      //this.products = [];
-
-      this.$store.commit('preLoaderModule/setPreloader', true);
-      this.$axios.get('/category-products/'+this.$route.params.slug+'/'+this.$route.params.sub_slug, {
-          params: this.$route.query
-        })
-        .then((response) => {
-          this.products = [];
-
-          if(process.client)
-            this.height = $(".product_img_wrap").outerHeight()
-
-          this.paginations = response.data.meta
-          this.products = response.data.data
-
-          this.$store.commit('preLoaderModule/setPreProducts', response.data.data);
-
-          if(!this.products.length)
-            $(".no_result").html('<div class="noresult_msg"><p class="text-center full_width d-block">No Result Found</p></div>');
-
-          this.$store.commit('settingsModule/setContentLoad', true);
-          this.$store.commit('preLoaderModule/setPreloader', false);
-        })
-        .catch(() => {
-          this.$store.commit('settingsModule/setContentLoad', true);
-          this.$store.commit('preLoaderModule/setPreloader', false);
-        })
-        .finally(()=> {
-          if(process.client){
-            setTimeout(function (){
-              $(".product_img_wrap").css({'height':'auto'})
-            }, 1000);
-          }
-        })
+      this.$store.dispatch('Products/LoadProduct', {slug:this.$route.params.slug+'/'+this.$route.params.sub_slug, params: {...this.$route.query}}).finally(()=>{
+        this.productFilter()
+        this.$store.commit('preLoaderModule/setPreloader', false);
+      })
     },
     productAreaCss() {
       if (process.client) {
@@ -178,10 +238,54 @@ export default {
       }
     },
     changePage(page){
-      this.$router.push({name: this.$route.name, params: {...this.$route.params, ...{page: Number(page)}}, query: {...this.$route.query, ...{sort: 4}, ...{page: Number(page)}}})
+      this.$store.commit('Products/setSortOrPaginateClick', true)
+      this.queryParams.page = page
+      this.filterAndPaginatePage()
+    },
+
+    filterProduct(id){
+      this.$store.commit('Products/setSortOrPaginateClick', true)
+      this.queryParams.sort = id
+      this.filterAndPaginatePage()
+    },
+    filterAndPaginatePage(){
+        this.$router.push({name: this.$route.name, params: {...this.$route.params, ...{page: this.queryParams.page}}, query: {...this.$route.query, ...{sort: this.queryParams.sort}, ...{page: this.queryParams.page}}})
+    },
+    sendServerRequest(){
+        this.$store.commit('preLoaderModule/setPreloader', true);
+        this.$store.dispatch('Products/LoadProduct', {slug:this.$route.params.slug +'/'+this.$route.params.sub_slug, params: this.queryParams}).then(()=>{
+          this.$store.commit('preLoaderModule/setPreloader', false);
+      })
     },
     capitalize(text){
       return text.toLowerCase()
+    },
+    categoryDetails(){
+      this.$store.dispatch('Products/LoadCategory', this.$route.params.slug+'/'+this.$route.params.sub_slug).then(()=>{
+        this.$store.commit('preLoaderModule/setPreloader', false);
+      })
+    },
+
+    async parentCategoryDetails(){
+      await this.$axios.get('/categories/' + this.$route.params.slug)
+        .then((res) => {
+          this.parentCategory = res.data.data;
+          if(!this.parentCategory)
+            return this.$router.push({name:'index'})
+        })
+        .catch(() => {
+          this.$router.push({name:'index'})
+        });
+    },
+
+    async categoryOgContentDetails(){
+      await this.$axios.get('/og-category-products/' + this.$route.params.slug+'/'+this.$route.params.sub_slug)
+        .then((res) => {
+          this.categoryOgContent = res.data.data;
+          this.$store.commit('preLoaderModule/setPreloader', false);
+        })
+        .catch(() => {
+        });
     }
   }
 }

@@ -91,7 +91,7 @@
                                     <td>{{ message.created_at }}</td>
                                     <td><small>{{ message.subject }}</small></td>
                                     <td><small>{{ message.sender }} </small></td>
-                                    <td>{{ message.message.substring(0,100)+".." }} </td>
+                                    <td>{{ message.message ?message.message.substring(0,100)+".." : null }} </td>
                                 </tr>
                             </template>
                         </tbody>
@@ -106,6 +106,7 @@
 
 <script>
 import pagination from "@/components/shared/Pagination";
+import {mapGetters} from "vuex";
 export default {
   middleware: 'auth',
   name: "Message",
@@ -143,13 +144,25 @@ export default {
   created() {
     this.getMessages();
   },
+  watch:{
+    'customer':function(){
+      this.getMessages()
+    }
+  },
+  computed: {
+    ...mapGetters({
+      customer: 'customerModule/getCustomerDetails',
+    }),
+  },
   methods:{
-    getMessages(){
-      this.$axios.get('/customer/messages?page='+this.messagePage)
-        .then((response)=>{
-          this.messagePaginations = response.data.meta
-          this.messages = response.data.data
-        })
+    getMessages() {
+      if (this.customer) {
+        this.$axios.get('/customer/'+this.customer.id+'/messages?page=' + this.messagePage)
+          .then((response) => {
+            this.messagePaginations = response.data.meta
+            this.messages = response.data.data
+          })
+      }
     },
     changePage(page){
       this.messagePage = page;

@@ -19,13 +19,13 @@
             </ul>
           </div>
           <div class="h_m_logo">
-            <nuxt-link v-if="$route.name != 'index'" :to="{name: 'index'}"> <img v-if="whiteLogo" :src="whiteLogo" alt="Wholesale women's clothing Davi & Dani"></nuxt-link>
-            <a v-else href="/"> <img v-if="whiteLogo" :src="whiteLogo" alt="Wholesale women's clothing Davi & Dani"></a>
+            <nuxt-link v-if="$route.name != 'index'" :to="{name: 'index'}"> <img v-if="blackLogo" :src="blackLogo" alt="Wholesale women's clothing Davi & Dani"></nuxt-link>
+            <a v-else href="/"> <img v-if="blackLogo" :src="blackLogo" alt="Wholesale women's clothing Davi & Dani"></a>
           </div>
           <div class="h_m_cart">
             <ul>
-              <li data-toggle="collapse_l_r" data-target="#muser"><span><img src="/images/user-white.png" alt="Wholesale women's clothing Davi & Dani"></span></li>
-              <li data-toggle="collapse_l_r" data-target="#mcart" class="m_h_cart"><span><img src="/images/cart-white.png" alt="Wholesale women's clothing Davi & Dani"> <b>{{ cartItems.length }}</b></span></li>
+              <li data-toggle="collapse_l_r" data-target="#muser"><span><img src="/images/user.png" alt="Wholesale women's clothing Davi & Dani"></span></li>
+              <li data-toggle="collapse_l_r" data-target="#mcart" class="m_h_cart"><span><img src="/images/cart.png" alt="Wholesale women's clothing Davi & Dani"> <b>{{ cartItems.length }}</b></span></li>
             </ul>
           </div>
         </div>
@@ -53,7 +53,7 @@ export default {
     ...mapGetters({
       cartItems: 'cartModule/getCartItems',
       user: 'authModule/getUser',
-      whiteLogo: 'settingsModule/getWhiteLogo',
+      blackLogo: 'settingsModule/getBlackLogo',
     }),
   },
   watch:{

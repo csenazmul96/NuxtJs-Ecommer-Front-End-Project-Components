@@ -12,19 +12,19 @@
       <div class="f_bottom" id="sort">
         <ul>
           <li :class="{'active': !$route.query.sort || $route.query.sort == '1'}">
-            <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 1}}}">Newest</nuxt-link>
+            <a role="button" class="cursor_pointer" @click="filterProduct(1)">Newest</a>
           </li>
           <li :class="{'active': $route.query.sort == '2'}">
-            <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 2}}}">Highest Price</nuxt-link>
+            <a role="button" class="cursor_pointer" @click="filterProduct(2)">Highest Price</a>
           </li>
           <li :class="{'active': $route.query.sort == '3'}">
-            <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 3}}}">Lowest Price</nuxt-link>
+            <a role="button" class="cursor_pointer" @click="filterProduct(3)">Lowest Price</a>
           </li>
           <li :class="{'active': $route.query.sort == '4'}">
-            <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 4}}}">Available On Desc</nuxt-link>
+            <a role="button" class="cursor_pointer" @click="filterProduct(4)">Available On Desc</a>
           </li>
           <li :class="{'active': $route.query.sort == '5'}">
-            <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 5}}}">Available On Asc</nuxt-link>
+            <a role="button" class="cursor_pointer" @click="filterProduct(5)">Available On Asc</a>
           </li>
         </ul>
       </div>
@@ -35,20 +35,20 @@
       <div class="p_filter_content" id="mfilter">
         <div class="header_menu_inner mobile_nav">
           <ul>
-            <li @click.prevent="closeFilter" :class="{'active': !$route.query.sort || $route.query.sort == '1'}">
-              <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 1}}}">Newest</nuxt-link>
+            <li :class="{'active': !$route.query.sort || $route.query.sort == '1'}">
+              <a role="button" class="cursor_pointer" @click="filterProduct(1)">Newest</a>
             </li>
-            <li @click.prevent="closeFilter" :class="{'active': $route.query.sort == '2'}">
-              <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 2}}}">Highest Price</nuxt-link>
+            <li :class="{'active': $route.query.sort == '2'}">
+              <a role="button" class="cursor_pointer" @click="filterProduct(2)">Highest Price</a>
             </li>
-            <li @click.prevent="closeFilter" :class="{'active': $route.query.sort == '3'}">
-              <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 3}}}">Lowest Price</nuxt-link>
+            <li :class="{'active': $route.query.sort == '3'}">
+              <a role="button" class="cursor_pointer" @click="filterProduct(3)">Lowest Price</a>
             </li>
-            <li @click.prevent="closeFilter" :class="{'active': $route.query.sort == '4'}">
-              <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 4}}}">Available On Desc</nuxt-link>
+            <li :class="{'active': $route.query.sort == '4'}">
+              <a role="button" class="cursor_pointer" @click="filterProduct(4)">Available On Desc</a>
             </li>
-            <li @click.prevent="closeFilter" :class="{'active': $route.query.sort == '5'}">
-              <nuxt-link :to="{name: $route.name, params: $route.params, query: {...$route.query, ...{sort: 5}}}">Available On Asc</nuxt-link>
+            <li :class="{'active': $route.query.sort == '5'}">
+              <a role="button" class="cursor_pointer" @click="filterProduct(5)">Available On Asc</a>
             </li>
           </ul>
         </div>
@@ -86,6 +86,10 @@ export default {
       $('.menu').removeClass('open');
       $('.p_filter_content').slideUp();
     },
+    filterProduct(id){
+      this.$emit('filterProduct', id)
+      this.closeFilter()
+    }
   },
 }
 </script>

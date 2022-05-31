@@ -39,17 +39,7 @@
           <router-link :to="{ name: 'user'}" class="btn btn_common" >
             Dashboard
           </router-link>
-          <client-only>
-            <v-facebook-login  v-model="fb.model"
-              v-if="!$auth.user.fb_user_id"
-              class="btn_common mt-3 btn_facebook"
-              :app-id="fb.app_id"
-              :version="fb.version"
-              :login-options="fb.options"
-              @sdk-init="handleSdkInit"
-              @login="fbLogin">
-            </v-facebook-login>
-          </client-only>
+          <facebook v-if="customer && !customer.fb_user_id"></facebook>
           <hr>
           <!-- <button class="btn_common mb_5 btn_facebook"><span><i class="fab fa-facebook-f"></i></span> <span>Connect To Facebook</span></button> -->
           <button class="btn_common" @click.prevent="logout">Log out </button>
@@ -65,12 +55,11 @@
 <script>
 import {mapGetters} from "vuex";
 import HeaderUserRegistration from "@/components/shared/header/HeaderUserRegistration";
-
+import Facebook from "../user/FacebookLogin";
 export default {
   components: {
     HeaderUserRegistration,
-    VFacebookLogin: () =>
-      process.client ? import('vue-facebook-login-component') : null
+    Facebook
   },
   data() {
     return {
@@ -82,15 +71,6 @@ export default {
         email: ''
       },
       showModalType: 'login',
-      fb: {
-        app_id: '2088893704619503',
-        version: 'v12.0',
-        options: { scope: 'email' },
-        FB: {},
-        scope: {},
-        model: {},
-        user_id: null
-      },
       resetEmail: null
     }
   },
@@ -102,6 +82,7 @@ export default {
   computed: {
     ...mapGetters({
       user: 'authModule/getUser',
+      customer: 'customerModule/getCustomerDetails',
     }),
   },
   methods: {
@@ -151,35 +132,6 @@ export default {
     mobCloseMenu() {
       this.$emit('closeModal')
     },
-    handleSdkInit({ FB, scope }) {
-        this.fb.FB = FB
-        this.fb.scope = scope
-
-        FB.getLoginStatus((response) => {
-            if (response.status === 'connected') {
-                this.fbLoginResponse(response);
-            }
-        });
-    },
-    fbLogin(response) {
-        if (response) {
-            this.fbLoginResponse(response);
-        }
-    },
-    fbLoginResponse(response) {
-        this.fb.user_id = response.authResponse.userID;
-
-        let formData = {};
-        formData.fb_user_id = response.authResponse.userID
-
-        this.$axios.post('/save-facebook-credentials', formData)
-        .then(()=>{
-          location.reload();
-        })
-        .catch((err) => {
-            this.showFailMsg("Something went wrong!");
-        })
-    }
   }
 }
 </script>

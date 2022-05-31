@@ -1,14 +1,11 @@
 <template>
   <div>
-    <client-only>
-      <!-- live chat start -->
-      <livechat-component v-if="liveData && $auth.loggedIn" :liveData="liveData"></livechat-component>
-      <!-- live chat end -->
-    </client-only>
-
+    <div class="newsletter_banner" v-if="newsletter">
+      <div class="newsletter_inner" v-html="newsletter.content"></div>
+    </div>
     <client-only>
       <!-- slider section start -->
-      <section class="show_mobile banner_wrap" v-if="mobileSliders && mobileSliders.length" >
+      <section class="show_mobile banner_wrap" v-if="bannerLoadComplete && mobileSliders && mobileSliders.length" >
         <template>
           <client-only >
             <carousel :autoplay="mobileSliders.length > 1" :loop="true" :autoplayTimeout="10000" :dots="false" :nav="false" :margin="5" :items="1">
@@ -19,16 +16,10 @@
               </div>
             </carousel>
           </client-only>
-          <div class="ocean_wrap">
-            <div class="ocean">
-              <div class="wave"></div>
-              <div class="wave"></div>
-            </div>
-          </div>
         </template>
       </section>
 
-      <section class="show_desktop banner_wrap" v-if="desktopSliders.length">
+      <section class="show_desktop banner_wrap" v-if="bannerLoadComplete && desktopSliders.length">
         <carousel :autoplay="desktopSliders.length > 1"
                   :loop="true" :autoplayTimeout="10000" :dots="false"
                   :nav="false" :margin="5" :items="1">
@@ -38,17 +29,11 @@
             </a>
           </div>
         </carousel>
-        <div class="ocean_wrap">
-          <div class="ocean">
-            <div class="wave"></div>
-            <div class="wave"></div>
-          </div>
-        </div>
       </section>
       <!-- slider section end -->
     </client-only>
     <!-- top widgets start -->
-    <section class="home_polish" v-if="desktopSliders.length && mobileSliders.length">
+    <section class="home_polish inspired_by_section" v-if="desktopSliders.length && mobileSliders.length">
       <div class="inner">
         <h1 v-if="sectionHeadings.length">{{ sectionName('home_page_top_feature_wedget') }}  </h1>
         <template v-if="featureWidgets && featureWidgets.length">
@@ -59,7 +44,7 @@
                   <picture v-if="banner.desktop">
                     <source media="(max-width:1450px)" :srcset="banner.mobile">
                     <source media="(min-width:1451px)" :srcset="banner.desktop">
-                    <img :data-src="banner.desktop" v-lazy-load alt="Wholesale women's clothing Davi & Dani" class="img-fluid">
+                    <img :data-src="banner.desktop" v-lazy-load alt="wholesale clothing ladies davi & dani" class="img-fluid">
                   </picture>
                 </a>
                 <h2>{{ banner.title }}</h2>
@@ -74,7 +59,7 @@
                   <picture v-if="banner.mobile">
                     <source media="(max-width:1024px)" :srcset="banner.mobile">
                     <source media="(max-width:768px)" :srcset="banner.mobile">
-                    <img :data-src="banner.mobile" v-lazy-load alt="Wholesale women's clothing Davi & Dani" class="img-fluid">
+                    <img :data-src="banner.mobile" v-lazy-load alt="wholesale clothing ladies davi & dani" class="img-fluid">
                   </picture>
                 </a>
                 <h2>{{ banner.title }}</h2>
@@ -88,10 +73,40 @@
     <!-- top widgets end -->
     <!-- latest items start -->
     <section class="home_our_picks home_product_wrap" v-if="selectedItems && selectedItems.length">
-      <h1 v-if="sectionHeadings.length">{{ sectionName('home_page_selected_item') }}</h1>
+      <h2 v-if="sectionHeadings.length">{{ sectionName('home_page_selected_item') }}</h2>
       <div class="h_our_picks_wrap" v-if="sectionHeadings.length">
         <div class="h_our_picks_row">
           <productComponent v-for="(product, productKey) in selectedItems" :key="'product_' + productKey"  :product="product" :imageBlock="false" :priceBlock="true"></productComponent>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section Four start -->
+    <section class="section_four_banner" v-if="sectionFourBannerDesktop.length || sectionFourBannerMobile.length">
+      <div class="section_four_banner_wrap show_desktop" v-if="sectionFourBannerDesktop.length">
+        <div class="section_four_video">
+            <a :href="sectionFourBannerDesktop[0].link">
+              <div class="videoWrapper" v-if="sectionFourBannerDesktop[0].file_type == 'video/mp4' ">
+                <video loop autoplay muted playsinline preload="metadata">
+                  <source :src="sectionFourBannerDesktop[0].image" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <img :data-src="sectionFourBannerDesktop[0].desktop" v-lazy-load alt="wholesale clothing ladies davi & dani" class="img-fluid" v-else>
+            </a>
+        </div>
+      </div>
+      <div class="section_four_banner_wrap show_mobile" v-if="sectionFourBannerMobile.length">
+        <div class="section_four_video">
+            <a :href="sectionFourBannerMobile[0].link">
+              <div class="videoWrapper" v-if="sectionFourBannerMobile[0].file_type == 'video/mp4' ">
+                <video loop autoplay muted playsinline preload="metadata">
+                  <source :src="sectionFourBannerMobile[0].image" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <img :data-src="sectionFourBannerMobile[0].desktop" v-lazy-load alt="wholesale clothing ladies davi & dani" class="img-fluid" v-else>
+            </a>
         </div>
       </div>
     </section>
@@ -103,7 +118,7 @@
     <!-- bottom widgets start -->
     <section class="home_polish fabulous_five" v-if="WidgetsBottoms && WidgetsBottoms.length">
       <div class="inner">
-        <h1 v-if="sectionHeadings.length">{{ sectionName('home_page_bottom_feature_wedget') }}</h1>
+        <h2 v-if="sectionHeadings.length">{{ sectionName('home_page_bottom_feature_wedget') }}</h2>
         <div v-if="sectionHeadings.length" class="home_polish_wrap show_desktop">
           <div class="home_polish_row">
             <div class="home_polish_inner" v-for="(banner, i) in WidgetsBottoms" :key="'bottombBanner_'+i">
@@ -111,7 +126,7 @@
                 <picture v-if="banner.desktop">
                   <source media="(max-width:1450px)" :srcset="banner.mobile">
                   <source media="(min-width:1451px)" :srcset="banner.desktop">
-                  <img :data-src="banner.desktop" v-lazy-load alt="Wholesale women's clothing Davi & Dani" class="img-fluid">
+                  <img :data-src="banner.desktop" v-lazy-load alt="wholesale clothing ladies davi & dani" class="img-fluid">
                 </picture>
               </a>
               <h2>{{ banner.title }}</h2>
@@ -126,7 +141,7 @@
                 <picture v-if="banner.mobile">
                   <source media="(max-width:1024px)" :srcset="banner.mobile">
                   <source media="(max-width:768px)" :srcset="banner.mobile">
-                  <img :data-src="banner.mobile" v-lazy-load alt="Wholesale women's clothing Davi & Dani" class="img-fluid">
+                  <img :data-src="banner.mobile" v-lazy-load alt="wholesale clothing ladies davi & dani" class="img-fluid">
                 </picture>
               </a>
               <h2>{{ banner.title }}</h2>
@@ -140,7 +155,7 @@
     <!-- Our Story Start -->
     <section class="our_values_area home_polish fabulous_five" v-if="ourStory">
       <div class="inner" >
-        <h1>Our Story</h1>
+        <h2>Our Wholesale Clothing Story</h2>
         <div class="h_our_picks_wrap" v-html="ourStory.content"></div>
       </div>
     </section>
@@ -168,14 +183,13 @@
   </div>
 </template>
 <script>
-import LivechatComponent from "../components/livechat/LivechatComponent";
 import ProductComponent from "../components/shared/ProductComponent";
 import InstagramSection from "../components/shared/InstagramSection";
 import Pusher from "pusher-js"
 import {mapGetters} from "vuex";
 
 export default {
-  components: {LivechatComponent, InstagramSection, ProductComponent},
+  components: {InstagramSection, ProductComponent},
   data() {
     return {
       desktopSliders: [],
@@ -183,7 +197,10 @@ export default {
       featureWidgets:[],
       WidgetsBottoms:[],
       selectedItems:[],
+      sectionFourBannerDesktop:[],
+      sectionFourBannerMobile:[],
       sectionHeadings:[],
+      newsletter: null,
       ourStory: null,
       customSection: null,
       service: null,
@@ -191,12 +208,9 @@ export default {
       showWlNModal: false,
       welcomeNotification: null,
       metas: null,
+      ogContent: null,
+      bannerLoadComplete: false,
     }
-  },
-  computed: {
-    ...mapGetters({
-      liveData: 'settingsModule/getLiveData',
-    }),
   },
   head() {
     return {
@@ -210,41 +224,112 @@ export default {
           name: 'description',
           content: this.metas ? this.metas.description : ''
         },
-      ]
+        {
+          property: 'og:locale',
+          content: 'en_US'
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:type',
+          content: 'website'
+        },
+        {
+          property: 'og:title',
+          content: this.metas ? this.metas.title : ''
+        },
+        {
+          property: 'og:description',
+          content: this.metas ? this.metas.description : ''
+        },
+        {
+          property: 'og:url',
+          content: 'https://davidani.com' + this.$route.fullPath
+        },
+        {
+          property: 'og:site_name',
+          content: 'Davi & Dani'
+        },
+        {
+          property: 'og:image',
+          content: 'https://davidani.com/images/davi-og-image.jpg'
+        },
+        {
+          property: 'twitter:card',
+          content: 'summary'
+        },
+        {
+          property: 'twitter:title',
+          content: this.metas ? this.metas.title : ''
+        },
+        {
+          property: 'twitter:description',
+          content: this.metas ? this.metas.description : ''
+        },
+        {
+          property: 'twitter:url',
+          content: 'https://davidani.com' + this.$route.fullPath
+        },
+        {
+          property: 'twitter:image',
+          content: 'https://davidani.com/images/davi-og-image.jpg'
+        }
+      ],
+      __dangerouslyDisableSanitizers: ['script'],
+      script: [
+        {
+          innerHTML: `{
+            "@context": "http://schema.org",
+            "@type": "Store",
+            "name": "Davi & Dani",
+            "description": "",
+            "startDate": "",
+            "endDate": "",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "365 E Jefferson Blvd",
+              "addressLocality": "California",
+              "addressRegion" : "CA",
+              "postalCode": "90011",
+              "addressCountry": "US"
+            },
+            "image": "https://davidani.com/images/davi-og-image.jpg"
+          }`,
+          type: 'application/ld+json'
+        }
+      ],
+      link: [
+        {
+          rel: 'canonical',
+          href: 'https://davidani.com' + this.$route.fullPath,
+        }
+      ],
     }
   },
   beforeCreate() {
     this.$store.commit('settingsModule/setContentLoad', false);
   },
   async asyncData ({ $axios }) {
-    const [mobile, desktop, metas] = await Promise.all([
+    const [mobile, desktop, metas, ogContent] = await Promise.all([
       $axios.get('/sliders/mobile'),
       $axios.get('/sliders/desktop'),
       $axios.get('/home-page/metas'),
+      $axios.get('/home-page/og-content'),
     ])
 
     return {
       mobileSliders: mobile.data.data,
       desktopSliders: desktop.data.data,
       metas: metas.data.data,
+      ogContent: ogContent.data.data,
     }
   },
-  /*async fetch() {
-    await this.$axios.get('/sliders/mobile')
-      .then((response) => this.mobileSliders = response.data.data)
-
-    await this.$axios.get('/sliders/desktop')
-      .then((response) => this.desktopSliders = response.data.data)
-
-    await this.$axios.get('/home-page/metas')
-      .then((response) => {
-        this.metas = response.data.data
-      })
-  },*/
   created() {
     if (process.client) {
       this.visitorRecord();
-      this.getLiveStatus();
+
     }
 
     this.getWelcomeNotification()
@@ -260,22 +345,30 @@ export default {
         this.WidgetsBottoms = response.data.bottom
       })
 
-    this.$axios.get('/custom-section', {params: {types: JSON.stringify([2,3,1])}})
+    this.$axios.get('/custom-section', {params: {types: JSON.stringify([2,3,1,5])}})
       .then((response) => {
         let resData = response.data.data
         resData.forEach(element => {
-          if(element.type == 1 && element.conten !='' ) this.customSection = element
-          if(element.type == 2 && element.conten !='' ) this.ourStory = element
-          if(element.type == 3 && element.conten !='' ) this.service = element
+          if(element.type == 1 && element.content !='' ) this.customSection = element
+          if(element.type == 2 && element.content !='' ) this.ourStory = element
+          if(element.type == 3 && element.content !='' ) this.service = element
+          if(element.type == 5 && element.content !='' ) this.newsletter = element
         });
       })
       .finally(()=>{
+        this.bannerLoadComplete = true;
         this.$store.commit('settingsModule/setContentLoad', true);
       })
 
     this.$axios.get('/home/selected/items')
       .then((response) => {
         this.selectedItems = response.data
+      })
+
+    this.$axios.get('/get/section/four/banner')
+      .then((response) => {
+        this.sectionFourBannerDesktop = response.data.desktop
+        this.sectionFourBannerMobile = response.data.mobile
       })
   },
   mounted() {
@@ -325,30 +418,6 @@ export default {
     //       }
     //     })
     // },
-    getLiveStatus(){
-      let self = this;
-      const PubNub = require('pubnub');
-      const uuid = PubNub.generateUUID();
-      const pubnub = new PubNub({
-        publishKey: process.env.NUXT_ENV_PUBNUB_PUBLISH_KEY,
-        subscribeKey: process.env.NUXT_ENV_PUBNUB_SUBSCRIBE_KEY,
-        uuid: uuid
-      });
-
-      pubnub.addListener({
-        message: function(message) {
-          if (message.message.title === 'live') {
-            self.$store.dispatch('settingsModule/getLiveVideo')
-          }
-        }
-      })
-
-      pubnub.subscribe({
-        channels: ['1'],
-        withPresence: true,
-      });
-    }
   }
-
 }
 </script>
